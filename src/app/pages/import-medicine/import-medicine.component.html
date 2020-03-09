@@ -1,0 +1,75 @@
+<nb-card>
+    <nb-card-header>
+        Hóa đơn nhập thuốc
+    </nb-card-header>
+    <nb-card-body>
+        <!-- <nb-card>
+            <nb-card-header>Thông tin cơ bản</nb-card-header>
+            <nb-card-body>
+                <div class="row">
+                    <div class="col-6 col-md-4">
+                        
+                    </div>
+                    <div class="col-6 col-md-4">
+                        <input nbInput placeholder="Ngày nhập thuốc" [nbDatepicker]="formpicker">
+                        <nb-datepicker #formpicker></nb-datepicker>
+                    </div> 
+                    <div class="col-6 col-md-4">
+                    </div>
+                </div>
+            </nb-card-body>
+        </nb-card> -->
+    </nb-card-body>
+    <nb-card-body>
+        <nb-card>
+            <nb-card-header>
+                <div class="row">
+                    <div class="col-md-4">
+                        Các loại thuốc
+                    </div>
+                    <div class="col-md-8">
+                        <input [(ngModel)]="date" nbInput placeholder="Ngày nhập thuốc" [nbDatepicker]="formpicker">
+                        <nb-datepicker #formpicker format="dd\MM\yyyy"></nb-datepicker>
+                    </div>
+                </div>
+
+            </nb-card-header>
+            <nb-card-body>
+                <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="onDeleteConfirm($event)"
+                    (edit)="onEditConfirm($event)" (editConfirm)="onEditConfirm($event)"
+                    (createConfirm)="onCreateConfirm($event)">
+                </ng2-smart-table>
+            </nb-card-body> 
+        </nb-card>
+
+    </nb-card-body>
+    <nb-card-footer>
+        <div class="row">
+            <div class="col-md-11"></div>
+            <div class="col-md-1">
+                <!-- (click)="notifyBeforeCreate(dialog)" -->
+                <button nbButton status="danger" (click)="testPrintDate()"> Tạo </button>
+            </div>
+        </div>
+    </nb-card-footer>
+</nb-card>
+<ng-template #dialog let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>Thông tin chi tiết
+        </nb-card-header>
+        <nb-card-body>
+            <ng2-smart-table [settings]="confirmCreateSetting" [source]="source">
+            </ng2-smart-table>
+        </nb-card-body>
+        <nb-card-footer>
+            <div class="row justify-content-md-center align-items-center">
+                <div class="col-md-0 offset-md-0">
+                    <button class="cancel" status="danger" nbButton (click)="ref.close()">Hủy</button>
+                </div>
+                <div class="col-md-1 offset-md-0">
+                    <button nbButton (click)="ref.close(true)">Tạo</button>
+                </div>
+            </div>
+        </nb-card-footer>
+    </nb-card>
+</ng-template>

@@ -1,0 +1,86 @@
+<h1>Thêm loại thuốc mới </h1>
+<form novalidate (ngSubmit)="onSubmit()" [formGroup]="rfContact" class="row justify-content-md-center">
+  <div class="col-md-8">
+    <div class="form-group row">
+      <label for="example-text-input" class="col-3 col-form-label">
+        Mã thuốc:
+      </label>
+      <div class="col-9">
+        <input class="form-control" type="text" placeholder="Mã thuốc" id="example-text-input"
+          formControlName="code">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="example-email-input" class="col-3 col-form-label">
+        Tên thuốc:
+      </label>
+      <div class="col-9">
+        <input formControlName="medicineName" class="form-control" type="email" placeholder="Tên thuốc"
+          id="example-email-input">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="example-url-fb" class="col-3 col-form-label">
+        Đơn vị tính:
+      </label>
+      <div class="col-9">
+        <input formControlName="unit" class="form-control" type="url" id="example-url-fb"
+          placeholder="Gói/Kg/Lít...">
+      </div>
+    </div>
+    <fieldset formGroupName="company">
+      <div class="form-group row">
+        <label for="example-url-twt" class="col-3 col-form-label">
+          Công ty:
+        </label>
+        <div class="col-9">
+          <input formControlName="companyName" class="form-control" type="url" id="example-url-twt"
+            placeholder="Tên công ty">
+        </div>
+      </div>
+    </fieldset>
+    <fieldset formGroupName="price">
+      <div class="form-group row">
+        <label for="example-url-web" class="col-3 col-form-label">
+          Giá nhập:
+        </label>
+        <div class="col-9">
+          <input formControlName="boughtPrice" class="form-control" type="url" id="example-url-web"
+            placeholder="100 = 100 Nghìn">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="example-tel-input" class="col-3 col-form-label">
+          Giá bán công ty:
+        </label>
+        <div class="col-9">
+          <input formControlName="sellForCompanyPrice" class="form-control" type="tel" id="example-tel-input"
+            placeholder="100 = 100 Nghìn">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="example-tel-input" class="col-3 col-form-label">
+          Giá bán trang trại:
+        </label>
+        <div class="col-9">
+          <input formControlName="sellForFarmPrice" class="form-control" type="tel" placeholder="100 = 100 Nghìn"
+            id="example-tel-input">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="example-tel-input" class="col-3 col-form-label" placeholder="100 = 100 Nghìn">
+          Giá bán lẻ:
+        </label>
+        <div class="col-9">
+          <input formControlName="sellForPersonalPrice" class="form-control" type="tel" placeholder="100 = 100 Nghìn"
+            id="example-tel-input">
+        </div>
+      </div>
+    </fieldset>
+    <div class="form-group row">
+      <div class="col-9 offset-3">
+        <button class="btn btn-primary" type="submit">Thêm</button>
+      </div>
+    </div>
+  </div>
+</form>
