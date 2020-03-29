@@ -30,6 +30,9 @@ import { NormalReportComponent } from './normal-report/normal-report.component';
 import { GridModule, PDFModule } from '@progress/kendo-angular-grid';
 import { SharedModule } from '../sharedmodule/sharemodule.module';
 import { FormsModule } from '@angular/forms';
+import { HistoryimportComponent } from './historyimport/historyimport.component';
+import { HistorysellComponent } from './historysell/historysell.component';
+import { MyCoreModule } from '../../service/core2';
 
 const components = [
   ChartjsBarComponent,
@@ -70,8 +73,11 @@ const components = [
     NbInputModule,
     NbButtonModule,
     FormsModule,
+    MyCoreModule,
     
   ],
-  declarations: [...routedComponents, ...components, NormalReportComponent],
+  declarations: [...routedComponents, ...components, NormalReportComponent, HistoryimportComponent, HistorysellComponent,
+  
+  ],
 })
 export class ReportModule {}

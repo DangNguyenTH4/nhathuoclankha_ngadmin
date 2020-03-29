@@ -11,7 +11,7 @@
  */
 /* tslint:disable:no-unused-variable member-ordering */
 
-import { Inject, Injectable, Optional }                      from '@angular/core';
+import { Inject, Injectable, Optional, SkipSelf }                      from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams,
          HttpResponse, HttpEvent }                           from '@angular/common/http';
 import { CustomHttpUrlEncodingCodec }                        from '../encoder';
@@ -24,7 +24,9 @@ import { Configuration }                                     from '../configurat
 import { environment } from '../../environments/environment';
 
 
-@Injectable()
+@Injectable({
+    providedIn: "root"
+  })
 export class HomeControllerService {
 
     protected basePath = environment.host;

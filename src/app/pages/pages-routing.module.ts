@@ -7,6 +7,7 @@ import { ECommerceComponent } from './e-commerce/e-commerce.component';
 import { NotFoundComponent } from './miscellaneous/not-found/not-found.component';
 import { SellMedicineComponent } from './sell-medicine/sell-medicine.component';
 import { CreateNewComponent } from './create-new/create-new.component';
+import { AuthGuardService } from '../service/auth-guard.service';
 
 const routes: Routes = [{
   path: '',
@@ -14,6 +15,7 @@ const routes: Routes = [{
   children: [
     {
       path: 'new-medicine',
+      canActivate:[AuthGuardService],
       component: CreateNewComponent
     },
     {
@@ -27,16 +29,20 @@ const routes: Routes = [{
     },
     {
       path: 'sell-medicine',
-      loadChildren: () => import('./sell-medicine/sell-medicine.module')
-        .then(m => m.SellMedicineModule),
+      canActivate:[AuthGuardService],
+      // loadChildren: () => import('./sell-medicine/sell-medicine.module')
+      //   .then(m => m.SellMedicineModule),
+      loadChildren:'./sell-medicine/sell-medicine.module#SellMedicineModule'
     },
     {
       path: 'import-medicine',
+      canActivate:[AuthGuardService],
       loadChildren: () => import('./import-medicine/import-medicine.module')
         .then(m => m.ImportMedicineModule),
     },
     {
       path: 'report',
+      canActivate:[AuthGuardService],
       loadChildren: () => import('./report/report.module')
         .then(m => m.ReportModule),
     },

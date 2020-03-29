@@ -19,4 +19,5 @@ export interface SellOrderDto {
     listMedicines?: Array<MedicineDto>;
     time?: Date;
     total?: number;
+    seller?:String;
 }

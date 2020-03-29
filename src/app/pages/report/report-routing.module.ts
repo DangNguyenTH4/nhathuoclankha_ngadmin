@@ -6,25 +6,36 @@ import { D3Component } from './d3/d3.component';
 import { ChartjsComponent } from './chartjs/chartjs.component';
 import { ReportComponent } from './report.component';
 import { NormalReportComponent } from './normal-report/normal-report.component';
+import { HistoryimportComponent } from './historyimport/historyimport.component';
+import { HistorysellComponent } from './historysell/historysell.component';
 
 const routes: Routes = [{
   path: '',
   component: ReportComponent,
   children: [
-    {path:'',redirectTo:'monthly',pathMatch:'full'},
+    { path: '', redirectTo: 'monthly', pathMatch: 'full' },
+    // {
+    //   path: 'weekly',
+    //   component: EchartsComponent,
+    // },
+    // {
+    //   path: 'monthly',
+    //   component: D3Component,
+    // }, {
+    //   path: 'yearly',
+    //   component: ChartjsComponent,
+    // },
     {
-    path: 'weekly',
-    component: EchartsComponent,
-  }, {
-    path: 'monthly',
-    component: D3Component,
-  }, {
-    path: 'yearly',
-    component: ChartjsComponent,
-  },{
-    path:'report1',
-    component:NormalReportComponent,
-  }],
+      path: 'report1',
+      component: NormalReportComponent,
+    }, {
+      path: 'history-import',
+      component: HistoryimportComponent,
+    }, {
+      path: 'history-sell-order',
+      component: HistorysellComponent,
+    }
+  ],
 }];
 
 @NgModule({

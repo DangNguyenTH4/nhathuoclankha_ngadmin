@@ -1,50 +1,25 @@
 import { ExtraOptions, RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { CommonData } from './common/common';
+import { AuthGuardService } from './service/auth-guard.service';
 
 const routes: Routes = [
   {
     path: CommonData.StorePagePrefix,
-    loadChildren: () => import('./pages/pages.module')
-      .then(m => m.PagesModule),
+    canActivate:[AuthGuardService],
+    loadChildren:   './pages/pages.module#PagesModule'
   },
   {
-    path:'admin',
-    // canActivate: [AuthGuard], 
-    loadChildren: ()=> import('./admin/admin.module')
+    path: 'admin',
+    canActivate:[AuthGuardService],
+    loadChildren: () => import('./admin/admin.module')
       .then(m => m.AdminModule),
   },
- 
-  // {
-  //   path: 'auth',
-  //   component: NbAuthComponent,
-  //   children: [
-  //     {
-  //       path: '',
-  //       component: NbLoginComponent,
-  //     },
-  //     {
-  //       path: 'login',
-  //       component: NbLoginComponent,
-  //     },
-  //     {
-  //       path: 'register',
-  //       component: NbRegisterComponent,
-  //     },
-  //     {
-  //       path: 'logout',
-  //       component: NbLogoutComponent,
-  //     },
-  //     {
-  //       path: 'request-password',
-  //       component: NbRequestPasswordComponent,
-  //     },
-  //     {
-  //       path: 'reset-password',
-  //       component: NbResetPasswordComponent,
-  //     },
-  //   ],
-  // },
+  {
+    path:'auth',
+    loadChildren: ()=> import('./auth/auth/auth.module').then(m=>m.AuthModule),
+  },
+  
   { path: '', redirectTo: CommonData.StorePagePrefix, pathMatch: 'full' },
   { path: '**', redirectTo: CommonData.StorePagePrefix },
 ];

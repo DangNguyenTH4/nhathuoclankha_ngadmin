@@ -29,7 +29,7 @@ export class AdminComponent implements OnInit {
     edit: {
       editButtonContent: '',
       saveButtonContent: '',
-      cancelButtonContent: '',
+      cancelButtonContent: '', 
       confirmSave: false,
     },
     delete: {

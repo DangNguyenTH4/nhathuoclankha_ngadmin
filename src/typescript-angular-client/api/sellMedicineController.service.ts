@@ -11,7 +11,7 @@
  */
 /* tslint:disable:no-unused-variable member-ordering */
 
-import { Inject, Injectable, Optional }                      from '@angular/core';
+import { Inject, Injectable, Optional, SkipSelf }                      from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams,
          HttpResponse, HttpEvent }                           from '@angular/common/http';
 import { CustomHttpUrlEncodingCodec }                        from '../encoder';
@@ -25,16 +25,20 @@ import { SellOrderDto } from '../model/sellOrderDto';
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
 import { environment } from '../../environments/environment';
+import { TokenStorageService } from '../../app/service/tokenstorage.service';
+import { CommonData } from '../../app/common/common';
 
 
-@Injectable()
+@Injectable({
+    providedIn: "root"
+  })
 export class SellMedicineControllerService {
 
     protected basePath =  environment.host;
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
 
-    constructor(protected httpClient: HttpClient, @Optional()@Inject(BASE_PATH) basePath: string, @Optional() configuration: Configuration) {
+    constructor(private tokenStorage:TokenStorageService,protected httpClient: HttpClient, @Optional()@Inject(BASE_PATH) basePath: string, @Optional() configuration: Configuration) {
         if (basePath) {
             this.basePath = basePath;
         }
@@ -42,6 +46,14 @@ export class SellMedicineControllerService {
             this.configuration = configuration;
             this.basePath = basePath || configuration.basePath || this.basePath;
         }
+        // if(this.defaultHeaders){
+        //     let header = new Headers();
+        //     let a = this.tokenStorage.getToken();
+        //     header.set(CommonData.AUTHENTICATION,a);
+        //     this.defaultHeaders = this.defaultHeaders.set(CommonData.AUTHENTICATION,a);
+        //     this.log.log(this.defaultHeaders);
+        //     // this.defaultHeaders = new HttpHeaders(header);
+        // }
     }
 
     /**
@@ -97,7 +109,6 @@ export class SellMedicineControllerService {
         if (httpHeaderAcceptSelected != undefined) {
             headers = headers.set('Accept', httpHeaderAcceptSelected);
         }
-
         // to determine the Content-Type header
         const consumes: string[] = [
         ];

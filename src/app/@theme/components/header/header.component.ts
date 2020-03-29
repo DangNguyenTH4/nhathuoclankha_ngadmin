@@ -6,7 +6,10 @@ import { LayoutService } from '../../../@core/utils';
 import { map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { NbAuthJWTToken, NbAuthService, NbTokenService } from '@nebular/auth';
-
+import { TokenStorageService } from '../../../service/tokenstorage.service';
+import { AuthService } from '../../../service/auth-service.service';
+const LOGOUT= "Đăng xuất";
+const PROFILE="Tài khoản";
 @Component({
   selector: 'ngx-header',
   styleUrls: ['./header.component.scss'],
@@ -40,17 +43,29 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   currentTheme = 'default';
 
-  userMenu = [ { title: 'Profile' }, { title: 'Log out' } ];
+  userMenu = [ { title: PROFILE }, { title: LOGOUT} ];
 
   constructor(
-    private authService: NbAuthService,
               private sidebarService: NbSidebarService,
               private menuService: NbMenuService,
               private themeService: NbThemeService,
               private userService: UserData,
               private layoutService: LayoutService,
-              private breakpointService: NbMediaBreakpointsService) {
+              private breakpointService: NbMediaBreakpointsService,
+              private authCustomerService : AuthService) {
                
+  }
+  onItemSelection(title){
+
+    if(title===LOGOUT){
+      console.log(title);
+      this.authCustomerService.logout();
+    }
+    else if(title===PROFILE){
+      console.log(title);
+    }else{
+      console.log("Nothing");
+    }
   }
 
   ngOnInit() {
@@ -68,12 +83,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
       )
       .subscribe((isLessThanXl: boolean) => this.userPictureOnly = isLessThanXl);
 
-    this.themeService.onThemeChange()
-      .pipe(
-        map(({ name }) => name),
-        takeUntil(this.destroy$),
-      )
-      .subscribe(themeName => this.currentTheme = themeName);
+      this.menuService.onItemClick().subscribe(( event ) => {
+        this.onItemSelection(event.item.title);
+      })
   }
 
   ngOnDestroy() {

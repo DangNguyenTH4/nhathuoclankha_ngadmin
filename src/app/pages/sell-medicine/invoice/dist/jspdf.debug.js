@@ -1551,7 +1551,7 @@ var jsPDF = function (global) {
       //curY = f2((pageHeight - (y - this._runningPageHeight)) * k);
 
       //			if (curY < 0){
-      //				console.log('auto page break');
+      //				this.log.log('auto page break');
       //				this.addPage();
       //				this._runningPageHeight = y -  (activeFontSize * 1.7 / k);
       //				curY = f2(pageHeight - activeFontSize * 1.7 /k);
@@ -2383,7 +2383,7 @@ var jsPDF = function (global) {
             // for safety, shouldn't normally be the case
             this.internal.write('/AcroForm ' + this.acroformPlugin.acroFormDictionaryRoot.objId + ' ' + 0 + ' R');
         } else {
-            console.log('Root missing...');
+            this.log.log('Root missing...');
         }
     };
 
@@ -3093,7 +3093,7 @@ AcroForm.PDFObject = function () {
                 }
             }
             if (!_objId) {
-                console.log("Couldn't create Object ID");
+                this.log.log("Couldn't create Object ID");
             }
             return _objId;
         },
@@ -3509,7 +3509,7 @@ AcroForm.internal.inherit(AcroForm.ChildClass, AcroForm.Field);
 
 AcroForm.RadioButton.prototype.setAppearance = function (appearance) {
     if (!('createAppearanceStream' in appearance && 'createMK' in appearance)) {
-        console.log("Couldn't assign Appearance to RadioButton. Appearance was Invalid!");
+        this.log.log("Couldn't assign Appearance to RadioButton. Appearance was Invalid!");
         return;
     }
     for (var i in this.__Kids) {
@@ -6596,7 +6596,7 @@ AcroForm.internal.setBitPosition = function (variable, position, value) {
             var v2Support = typeof this.pdf.internal.newObject2 === 'function';
 
             if (!v2Support) {
-                console.log('jsPDF v2 not enabled');
+                this.log.log('jsPDF v2 not enabled');
                 return;
             }
 
@@ -8808,7 +8808,7 @@ AcroForm.internal.setBitPosition = function (variable, position, value) {
 		    kerning = options.kerning ? options.kerning : this.internal.getFont().metadata.Unicode.kerning,
 		    kerningFractionOf = kerning.fof ? kerning.fof : 1;
 
-		// console.log("widths, kergnings", widths, kerning)
+		// this.log.log("widths, kergnings", widths, kerning)
 
 		var i,
 		    l,
@@ -12440,7 +12440,7 @@ var Deflater = (function(obj) {
 			if (that.pending !== 0) {
 				strm.flush_pending();
 				if (strm.avail_out === 0) {
-					// console.log(" avail_out==0");
+					// this.log.log(" avail_out==0");
 					// Since avail_out is 0, deflate will be called again with
 					// more output space, but possibly with both pending and
 					// avail_in equal to zero. There won't be anything to do,
@@ -12616,9 +12616,9 @@ var Deflater = (function(obj) {
 			// if (that.dstate.pending_buf.length <= that.dstate.pending_out || that.next_out.length <= that.next_out_index
 			// || that.dstate.pending_buf.length < (that.dstate.pending_out + len) || that.next_out.length < (that.next_out_index +
 			// len)) {
-			// console.log(that.dstate.pending_buf.length + ", " + that.dstate.pending_out + ", " + that.next_out.length + ", " +
+			// this.log.log(that.dstate.pending_buf.length + ", " + that.dstate.pending_out + ", " + that.next_out.length + ", " +
 			// that.next_out_index + ", " + len);
-			// console.log("avail_out=" + that.avail_out);
+			// this.log.log("avail_out=" + that.avail_out);
 			// }
 
 			that.next_out.set(that.dstate.pending_buf.subarray(that.dstate.pending_out, that.dstate.pending_out + len), that.next_out_index);
@@ -14186,8 +14186,8 @@ module.exports = LinearGradientContainer;
 
 },{"./color":3,"./gradientcontainer":9}],13:[function(_dereq_,module,exports){
 var logger = function() {
-    if (logger.options.logging && window.console && window.console.log) {
-        Function.prototype.bind.call(window.console.log, (window.console)).apply(window.console, [(Date.now() - logger.options.start) + "ms", "html2canvas:"].concat([].slice.call(arguments, 0)));
+    if (logger.options.logging && window.console && window.this.log.log) {
+        Function.prototype.bind.call(window.this.log.log, (window.console)).apply(window.console, [(Date.now() - logger.options.start) + "ms", "html2canvas:"].concat([].slice.call(arguments, 0)));
     }
 };
 

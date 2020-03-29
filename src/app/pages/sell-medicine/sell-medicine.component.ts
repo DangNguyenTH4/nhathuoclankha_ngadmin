@@ -13,6 +13,10 @@ import { color } from 'd3-color';
 import { isEmpty } from 'rxjs/operators';
 import { Logger } from '../../log.service';
 import { GenerateFileName } from '../../common/genfilename';
+import { AuthService } from '../../service/auth-service.service';
+const EMOSSCOMPANY = "Công ty Cổ Phần Nông Trại E.MOSS";
+const PHONE = "PHONE";
+const NAME = "NAME_";
 @Component({
   selector: 'ngx-sell-medicine',
   templateUrl: './sell-medicine.component.html',
@@ -34,15 +38,17 @@ export class SellMedicineComponent implements OnInit {
 
   }
   constructor(
+    private log: Logger,
     private sellMedicineControllerService: SellMedicineControllerService,
     private medicineControllerService: MedicineControllerService
     , private dialogService: NbDialogService
     , private toastService: ToastrService,
-    private logger: Logger,
     private customerControllerService: CustomerControllerService,
+    private authService: AuthService
   ) {
     this.prePareListMedicineDisplay();
-    this.loadListCustomer();
+    this.loadListPhoneCustomer();
+    this.loadListNameCustomer();
   }
   private prePareListMedicineDisplay() {
     //get all medicine
@@ -62,6 +68,7 @@ export class SellMedicineComponent implements OnInit {
   listSourceMedicines: MedicineDto[] = [];
   settings: Object;
   loadTableSetting() {
+    this.log.log("LOad table settting....");
     return {
       action: {
         add: true,
@@ -126,9 +133,10 @@ export class SellMedicineComponent implements OnInit {
           valuePrepareFunction: (value) => { return value === 'Total' ? value : Intl.NumberFormat('vi-vn', { style: 'currency', currency: 'Vnd' }).format(value * 1000) }
         },
         addMore: {
-          title: 'Tính thêm',
-          type: 'text',
+          title: 'Tính phí',
+          type: 'number',
           filter: false,
+          defaultValue: 0,
           valuePrepareFunction: (value) => { return value === 'Total' ? value : Intl.NumberFormat('vi-vn', { style: 'currency', currency: 'Vnd' }).format(value * 1000) }
         },
         total: {
@@ -157,7 +165,8 @@ export class SellMedicineComponent implements OnInit {
           e.medicinePrice = medicine.priceForPersonal;
         }
         e.addMore = medicine.addMore;
-        e.total = e.amount * (parseInt(e.medicinePrice)+parseInt(e.addMore));
+        e.total = this.calculateTotalWithAddmore(e.addMore, e.medicinePrice, e.amount);
+
       });
       this.source.load(data);
       this.loadDataForInvoice();
@@ -173,11 +182,11 @@ export class SellMedicineComponent implements OnInit {
     this.dialogService.open(dialog);
   }
   async createOrder(pdf) {
-    this.logger.log('Create new order....');
-    let sellOrderDto: SellOrderDto = { customer: null, id: null, listMedicines: [], time: null, total: 0 };
+    this.log.log('Create new order....');
+    let sellOrderDto: SellOrderDto = { customer: null, id: null, listMedicines: [], time: null, total: 0, seller: this.authService.getUserName() };
     sellOrderDto.customer = this.customer;
     let tempTotal: number = 0;
-    this.logger.log('Build body sellDto..');
+    this.log.log('Build body sellDto..');
     let result = await this.source.getAll().then(
       data => {
         data.forEach(e => {
@@ -190,32 +199,32 @@ export class SellMedicineComponent implements OnInit {
             priceForFarm: e.medicinePrice,
             priceForPersonal: e.medicinePrice,
             total: e.total,
-            addMore : e.addMore
+            addMore: e.addMore
           });
           tempTotal += e.total;
         });
         sellOrderDto.total = tempTotal;
-        this.logger.log('send request....');
+        this.log.log('send request....');
         this.sellMedicineControllerService.createSellOrderUsingPOST(sellOrderDto).subscribe(
           data => {
             this.resultCreate = true;
-            this.logger.log('Tạo thành công -- Set result create = true: ' + this.resultCreate);
+            this.log.log('Tạo thành công -- Set result create = true: ' + this.resultCreate);
             this.toastService.notify(1, "Thành công!", "Tạo order thành công!");
-            this.logger.log('Sau khi create order: ' + this.resultCreate);
+            this.log.log('Sau khi create order: ' + this.resultCreate);
             if (this.resultCreate) {
               if (pdf) {
-                this.logger.log('Tạo order thành công--> In file pdf');
+                this.log.log('Tạo order thành công--> In file pdf');
                 let fileName = GenerateFileName.genfileName(this.customer.name) + '.pdf';
                 pdf.saveAs(fileName);
-                
+
               }
               this.resetData();
             }
           }, error => {
             this.resultCreate = false;
-            this.logger.log(error.error);
+            this.log.log(error.error);
             this.toastService.notify(4, "Không thành công!", error.error);
-            this.logger.log('Tạo không thành công -- Set result create = false');
+            this.log.log('Tạo không thành công -- Set result create = false');
 
           }
         );
@@ -250,7 +259,7 @@ export class SellMedicineComponent implements OnInit {
   async editOrCreateNewMedicine(event, isCreateNew: boolean) {
     let validateMessage = await this.validateRow(event.newData, isCreateNew);
     if (validateMessage === "ok") {
-      event.newData = this.updateInfoRow(event.newData);
+      event.newData = this.updateInfoRow(event.newData, isCreateNew);
       await event.confirm.resolve(event.newData);
       return event;
 
@@ -260,10 +269,10 @@ export class SellMedicineComponent implements OnInit {
       return null;;
     }
   }
-  isEmoss:boolean = true;
+  isEmoss: boolean = true;
   autoCheckDate: boolean = true;
   customer: CustomerDto = { id: null, name: 'Công ty Cổ Phần Nông Trại E.MOSS', phoneNumber: '', type: 'other' };
-  private updateInfoRow(newData: any) {
+  private updateInfoRow(newData: any, isCreateNew: boolean) {
     let medicine = this.listSourceMedicines.find(e => e.code == newData.medicineCode);
     newData.medicineName = medicine.name;
     if (this.customer.type === 'company') {
@@ -273,17 +282,33 @@ export class SellMedicineComponent implements OnInit {
     } else {
       newData.medicinePrice = medicine.priceForPersonal;
     }
-    if(newData.addMore!=null){
-      this.logger.logAny(newData.addMore);
-      // this.logger.logAny(newData.medicinePrice);
-      this.logger.logAny(newData.medicinePrice+parseInt(newData.addMore));
-      newData.total = ((parseInt(newData.medicinePrice)+parseInt(newData.addMore)) * newData.amount).toString();
+    //when create new and no edit addmore update old addmore
+    if (isCreateNew && this.isEmpty(newData.addMore)) {
+      newData.addMore = medicine.addMore;
     }
-    else{
-      newData.total = ((parseInt(newData.medicinePrice)) * newData.amount).toString();  
-    }
+
+    //calculate total:
+    newData.total = this.calculateTotalWithAddmore(newData.addMore, newData.medicinePrice, newData.amount);
     newData.medicineUnit = medicine.unit;
     return newData;
+  }
+  private isEmpty(something: any): boolean {
+    return something === null || something === '';
+  }
+  private calculateTotalWithAddmore(addMore, medicinePrice, amount): string {
+    this.log.log("Calculate total processing...");
+    let total = '';
+    if (addMore != null && addMore !== '') {
+      this.log.log('new add more have: ' + addMore);
+      // this.log.log(newData.medicinePrice);
+      this.log.log(medicinePrice + parseInt(addMore));
+      total = ((parseInt(medicinePrice) + parseInt(addMore)) * amount).toString();
+    }
+    else {
+      this.log.log('non add more have: ' + addMore);
+      total = ((parseInt(medicinePrice)) * amount).toString();
+    }
+    return total;
   }
   // Khi nhập đơn hàng xong mới nhập số điện thoại => cần update lại phần add more
   private updateInfoRowWithFromOldBought(newData: any) {
@@ -303,7 +328,7 @@ export class SellMedicineComponent implements OnInit {
   }
   async checkMedicineExisting(medicineCode) {
     let temp = false;
-    console.log(medicineCode);
+    this.log.log(medicineCode);
     let temp2 = await this.source.getAll().then(data => {
       data.forEach(e => {
         if (e.medicineCode === medicineCode) {
@@ -363,8 +388,8 @@ export class SellMedicineComponent implements OnInit {
           let price: number = element.medicinePrice * 1000;
           let amount: number = element.amount;
           let unit: string = element.medicineUnit;
-          let addMore : number = element.addMore*1000;
-          temp.push(new InvoiceRow(name, price,addMore, amount, unit));
+          let addMore: number = element.addMore * 1000;
+          temp.push(new InvoiceRow(name, price, addMore, amount, unit));
         });
       } else {
         temp.push(new InvoiceRow("", 0, 0, 0, ""));
@@ -373,7 +398,7 @@ export class SellMedicineComponent implements OnInit {
     this.data = temp;
   }
   resetData() {
-    this.logger.log('Reset lại data');
+    this.log.log('Reset lại data');
     this.customer = {};
     this.source.load([]);
     this.resultCreate = false;
@@ -449,7 +474,7 @@ export class SellMedicineComponent implements OnInit {
   async printPdf(pdf) {
     this.resultCreate = false;
     let resultValidate = '';
-    this.logger.log('Validate When create order');
+    this.log.log('Validate When create order');
     resultValidate = await this.validateWhenCreateOrder();
     if (resultValidate === 'ok') {
       await this.createOrder(pdf);
@@ -461,47 +486,90 @@ export class SellMedicineComponent implements OnInit {
   }
   changeTypePrint(even) {
     this.paperSize = even;
-    console.log(even);
+    this.log.log(even);
   }
   public data: InvoiceRow[] = invoiceData;
   paperSize = 'A5';
-  listPhone:string[]=[];
+  listPhone: string[] = [];
+  listName: string[] = [];
 
-  loadListCustomer(){
-   
-    this.customerControllerService.getListPhone('').subscribe(data=>{
-      this.listPhone=data;
-      console.log(this.listPhone);
+  private loadListPhoneCustomer() {
+
+    this.customerControllerService.getListPhone('').subscribe(data => {
+      this.listPhone = data;
+      this.log.logAny(this.listPhone);
     });
   }
-  changePhone(){
-    this.logger.log("Chnage");
-    this.customerControllerService.getCustomerByPhone2UsingGET(this.customer.phoneNumber).subscribe(data=>{
-      this.logger.logAny(data);
-      if(data){
+  private loadListNameCustomer() {
+    this.customerControllerService.getListName('').subscribe(data => {
+      this.listName = data;
+      this.log.logAny(this.listName);
+    });
+  }
+  //Khi người dùng nhập số điện thoại xong => update thông tin của người dùng nếu tồn tại
+  changePhone() {
+    this.log.log("Change phone");
+    this.customerControllerService.getCustomerByPhone2UsingGET(PHONE + this.customer.phoneNumber).subscribe(data => {
+      this.log.logAny(data);
+      if (data) {
         this.customer = data;
+        this.changeEmossCheckbox(this.customer.name);
       }
     });
-    this.customerControllerService.getListBougthByPhoneUsingGet(this.customer.phoneNumber).subscribe(data=>{
-      this.logger.logAny(data);
-      if(data){
-        this.listSourceMedicines=data;
+    this.customerControllerService.getListBougthByPhoneUsingGet(PHONE + this.customer.phoneNumber).subscribe(data => {
+      if (data) {
+        this.log.logAny(data);
+        this.listSourceMedicines = data;
+        this.log.logAny(this.listSourceMedicines);
       }
       //update current price with current customer type
       this.selectType(this.customer.type);
+      //load new listSourceMedicine 
+
       this.loadTableSetting();
     });
   }
-  changeName(){
-    this.logger.log("Change name log");
+  changeName() {
+    this.log.log("Change name log");
+    if (this.customer.name === EMOSSCOMPANY) {
+      this.isEmoss = true;
+    } else { this.isEmoss = false; }
+    //Add prefix : NAME_ for server know find by name
+    this.customerControllerService.getCustomerByPhone2UsingGET(NAME + this.customer.name).subscribe(data => {
+      this.log.logAny(data);
+      if (data) {
+        this.customer = data;
+        this.changeEmossCheckbox(this.customer.name);
+      }
+    });
+    this.customerControllerService.getListBougthByPhoneUsingGet(NAME + this.customer.name).subscribe(data => {
+      if (data) {
+        this.log.logAny(data);
+        this.listSourceMedicines = data;
+        this.log.logAny(this.listSourceMedicines);
+      }
+      //update current price with current customer type
+      this.selectType(this.customer.type);
+      //load new listSourceMedicine 
+
+      this.loadTableSetting();
+    });
+
   }
-  changeToEmossCompany(){
-    this.logger.log(this.isEmoss+"");
-    if(this.isEmoss){
-      this.customer.name="Công ty Cổ Phần Nông Trại E.MOSS";
-    }else{
-      this.customer.name="";
+  changeToEmossCompany() {
+    this.log.log(this.isEmoss + "");
+    if (this.isEmoss) {
+      this.customer.name = EMOSSCOMPANY;
+    } else {
+      this.customer.name = "";
     }
+  }
+  changeEmossCheckbox(comName: string) {
+    if (comName === EMOSSCOMPANY) {
+      this.isEmoss = true;
+      return;
+    }
+    this.isEmoss = false;
   }
 }
 export const invoiceData = [

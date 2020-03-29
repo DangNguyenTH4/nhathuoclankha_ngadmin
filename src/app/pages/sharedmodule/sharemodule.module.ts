@@ -6,6 +6,7 @@ import { ToastrComponent } from './toastr/toastr.component';
 import { ChartjsLineComponent } from './chartjs-line.component';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { ChartModule } from 'angular2-chartjs';
+import { HttpClientModule } from '@angular/common/http';
 const ENTRY_COMPONENTS = [
     
 ];

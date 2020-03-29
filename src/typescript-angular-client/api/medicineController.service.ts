@@ -11,7 +11,7 @@
  */
 /* tslint:disable:no-unused-variable member-ordering */
 
-import { Inject, Injectable, Optional }                      from '@angular/core';
+import { Inject, Injectable, Optional, SkipSelf }                      from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams,
          HttpResponse, HttpEvent }                           from '@angular/common/http';
 import { CustomHttpUrlEncodingCodec }                        from '../encoder';
@@ -26,16 +26,20 @@ import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables'
 import { Configuration }                                     from '../configuration';
 import { MedicineDto, MedicineDtoAdmin } from '../model/models';
 import { environment } from '../../environments/environment';
+import { CommonData } from '../../app/common/common';
+import { TokenStorageService } from '../../app/service/tokenstorage.service';
 
 
-@Injectable()
+@Injectable({
+    providedIn: "root"
+  })
 export class MedicineControllerService {
 
     protected basePath =  environment.host;
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
 
-    constructor(protected httpClient: HttpClient, @Optional()@Inject(BASE_PATH) basePath: string, @Optional() configuration: Configuration) {
+    constructor(private tokenStorage:TokenStorageService,@Optional() @SkipSelf()protected httpClient: HttpClient, @Optional()@Inject(BASE_PATH) basePath: string, @Optional() configuration: Configuration) {
         if (basePath) {
             this.basePath = basePath;
         }
@@ -90,6 +94,8 @@ export class MedicineControllerService {
         if (httpHeaderAcceptSelected != undefined) {
             headers = headers.set('Accept', httpHeaderAcceptSelected);
         }
+       
+
 
         // to determine the Content-Type header
         const consumes: string[] = [
@@ -234,5 +240,6 @@ export class MedicineControllerService {
             }
         );
     }
+   
 
 }

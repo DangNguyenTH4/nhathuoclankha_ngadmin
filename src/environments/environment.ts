@@ -10,5 +10,6 @@
 
 export const environment = {
   production: false,
-  host:'http://'+window.location.hostname+':6868'
+  host:'http://'+window.location.hostname+':6868',
+  hostNoHttp : window.location.hostname+':6868'
 };

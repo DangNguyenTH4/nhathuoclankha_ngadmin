@@ -22,14 +22,17 @@
                 <nb-checkbox [(checked)]="isEmoss" (change)="changeToEmossCompany()" status="success"></nb-checkbox>
               </div>
               <div class="col-6 col-md-4">
-                <input [(ngModel)]="customer.phoneNumber" (change)="changePhone()" list="listCustomer" type="text" nbInput
+                <input [(ngModel)]="customer.phoneNumber" (change)="changePhone()" list="listCustomerPhone" type="text" nbInput
                   placeholder="Số điện thoại">
-                <datalist id="listCustomer" >
+                <datalist id="listCustomerPhone" >
                   <option *ngFor="let phone of listPhone" value="{{phone}}">
                 </datalist>
               </div>
               <div class="col-6 col-md-4">
-                <input [(ngModel)]="customer.name" (change)="changeName()" type="text" nbInput placeholder="Tên khách">
+                <input [(ngModel)]="customer.name" (change)="changeName()" list="listCustomerName" type="text" nbInput placeholder="Tên khách">
+                <datalist id="listCustomerName" >
+                  <option *ngFor="let name of listName" value="{{name}}">
+                </datalist>
               </div>
             </div>
             <div class="row" style="margin-top: 10px;">

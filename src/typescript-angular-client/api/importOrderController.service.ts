@@ -11,7 +11,7 @@
  */
 /* tslint:disable:no-unused-variable member-ordering */
 
-import { Inject, Injectable, Optional } from '@angular/core';
+import { Inject, Injectable, Optional, SkipSelf } from '@angular/core';
 import {
     HttpClient, HttpHeaders, HttpParams,
     HttpResponse, HttpEvent
@@ -27,7 +27,9 @@ import { ImportOrderDto } from '../model/models';
 import { environment } from '../../environments/environment';
 
 
-@Injectable()
+@Injectable({
+    providedIn: "root"
+  })
 export class ImportMedicineControllerService {
 
     protected basePath = environment.host;

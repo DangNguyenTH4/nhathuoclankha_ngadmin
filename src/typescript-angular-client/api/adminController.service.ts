@@ -11,7 +11,7 @@
  */
 /* tslint:disable:no-unused-variable member-ordering */
 
-import { Inject, Injectable, Optional } from '@angular/core';
+import { Inject, Injectable, Optional, SkipSelf } from '@angular/core';
 import {
     HttpClient, HttpHeaders, HttpParams,
     HttpResponse, HttpEvent
@@ -24,10 +24,12 @@ import { MedicineDtoAdmin } from '../model/medicineDtoAdmin';
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { Configuration } from '../configuration';
 import { environment } from '../../environments/environment';
-import { ReportDto } from '../model/models';
+import { ReportDto, ImportOrderDto, SellOrderDto } from '../model/models';
 
 
-@Injectable()
+@Injectable({
+    providedIn: "root"
+})
 export class AdminControllerService {
 
     protected basePath = environment.host;
@@ -151,121 +153,6 @@ export class AdminControllerService {
             }
         );
     }
-    /**
-        * report2
-        * 
-        * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-        * @param reportProgress flag to report request and response progress.
-        */
-    public report2UsingGET(observe?: 'body', reportProgress?: boolean): Observable<Array<ReportDto>>;
-    public report2UsingGET(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<ReportDto>>>;
-    public report2UsingGET(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<ReportDto>>>;
-    public report2UsingGET(observe: any = 'body', reportProgress: boolean = false): Observable<any> {
-
-        let headers = this.defaultHeaders;
-
-        // to determine the Accept header
-        let httpHeaderAccepts: string[] = [
-            '*/*'
-        ];
-        const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        if (httpHeaderAcceptSelected != undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-        // to determine the Content-Type header
-        const consumes: string[] = [
-        ];
-
-        return this.httpClient.get<Array<ReportDto>>(`${this.basePath}/admin/report2`,
-            {
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * reportDaily
-     * 
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public reportDailyUsingGET(observe?: 'body', reportProgress?: boolean): Observable<any>;
-    public reportDailyUsingGET(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
-    public reportDailyUsingGET(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
-    public reportDailyUsingGET(observe: any = 'body', reportProgress: boolean = false): Observable<any> {
-
-        let headers = this.defaultHeaders;
-
-        // to determine the Accept header
-        let httpHeaderAccepts: string[] = [
-            '*/*'
-        ];
-        const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        if (httpHeaderAcceptSelected != undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-        // to determine the Content-Type header
-        const consumes: string[] = [
-        ];
-
-        return this.httpClient.get<any>(`${this.basePath}/admin/report-daily`,
-            {
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * reportMonthly
-     * 
-     * @param month month
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public reportMonthlyUsingGET(month?: number, observe?: 'body', reportProgress?: boolean): Observable<Array<ReportDto>>;
-    public reportMonthlyUsingGET(month?: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<ReportDto>>>;
-    public reportMonthlyUsingGET(month?: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<ReportDto>>>;
-    public reportMonthlyUsingGET(month?: number, observe: any = 'body', reportProgress: boolean = false): Observable<any> {
-
-
-        let queryParameters = new HttpParams({ encoder: new CustomHttpUrlEncodingCodec() });
-        if (month !== undefined && month !== null) {
-            queryParameters = queryParameters.set('month', <any>month);
-        }
-
-        let headers = this.defaultHeaders;
-
-        // to determine the Accept header
-        let httpHeaderAccepts: string[] = [
-            '*/*'
-        ];
-        const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        if (httpHeaderAcceptSelected != undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-        // to determine the Content-Type header
-        const consumes: string[] = [
-        ];
-
-        return this.httpClient.get<Array<ReportDto>>(`${this.basePath}/admin/report-monthly`,
-            {
-                params: queryParameters,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
 
     /**
      * report
@@ -323,15 +210,33 @@ export class AdminControllerService {
     }
 
     /**
-     * reportYearly
+     * get history import
      * 
+     * @param fromDate fromDate
+     * @param toDate toDate
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public reportYearlyUsingGET(observe?: 'body', reportProgress?: boolean): Observable<any>;
-    public reportYearlyUsingGET(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
-    public reportYearlyUsingGET(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
-    public reportYearlyUsingGET(observe: any = 'body', reportProgress: boolean = false): Observable<any> {
+    public reportHistoryImportGET(fromDate: string, toDate: string, observe?: 'body', reportProgress?: boolean): Observable<Array<ImportOrderDto>>;
+    public reportHistoryImportGET(fromDate: string, toDate: string, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<ImportOrderDto>>>;
+    public reportHistoryImportGET(fromDate: string, toDate: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<ImportOrderDto>>>;
+    public reportHistoryImportGET(fromDate: string, toDate: string, observe: any = 'body', reportProgress: boolean = false): Observable<any> {
+
+        if (fromDate === null || fromDate === undefined) {
+            throw new Error('Required parameter fromDate was null or undefined when calling reportUsingGET.');
+        }
+
+        if (toDate === null || toDate === undefined) {
+            throw new Error('Required parameter toDate was null or undefined when calling reportUsingGET.');
+        }
+
+        let queryParameters = new HttpParams({ encoder: new CustomHttpUrlEncodingCodec() });
+        if (fromDate !== undefined && fromDate !== null) {
+            queryParameters = queryParameters.set('fromDate', <any>fromDate);
+        }
+        if (toDate !== undefined && toDate !== null) {
+            queryParameters = queryParameters.set('toDate', <any>toDate);
+        }
 
         let headers = this.defaultHeaders;
 
@@ -348,8 +253,64 @@ export class AdminControllerService {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.get<any>(`${this.basePath}/admin/report-yearly`,
+        return this.httpClient.get<Array<ImportOrderDto>>(`${this.basePath}/admin/history-import-order`,
             {
+                params: queryParameters,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+   * history sell
+   * 
+   * @param fromDate fromDate
+   * @param toDate toDate
+   * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+   * @param reportProgress flag to report request and response progress.
+   */
+    public reportHistorySellGET(fromDate: string, toDate: string, observe?: 'body', reportProgress?: boolean): Observable<Array<SellOrderDto>>;
+    public reportHistorySellGET(fromDate: string, toDate: string, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<SellOrderDto>>>;
+    public reportHistorySellGET(fromDate: string, toDate: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<SellOrderDto>>>;
+    public reportHistorySellGET(fromDate: string, toDate: string, observe: any = 'body', reportProgress: boolean = false): Observable<any> {
+
+        if (fromDate === null || fromDate === undefined) {
+            throw new Error('Required parameter fromDate was null or undefined when calling reportUsingGET.');
+        }
+
+        if (toDate === null || toDate === undefined) {
+            throw new Error('Required parameter toDate was null or undefined when calling reportUsingGET.');
+        }
+
+        let queryParameters = new HttpParams({ encoder: new CustomHttpUrlEncodingCodec() });
+        if (fromDate !== undefined && fromDate !== null) {
+            queryParameters = queryParameters.set('fromDate', <any>fromDate);
+        }
+        if (toDate !== undefined && toDate !== null) {
+            queryParameters = queryParameters.set('toDate', <any>toDate);
+        }
+
+        let headers = this.defaultHeaders;
+
+        // to determine the Accept header
+        let httpHeaderAccepts: string[] = [
+            '*/*'
+        ];
+        const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+        ];
+
+        return this.httpClient.get<Array<SellOrderDto>>(`${this.basePath}/admin/history-sell-order`,
+            {
+                params: queryParameters,
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
                 observe: observe,

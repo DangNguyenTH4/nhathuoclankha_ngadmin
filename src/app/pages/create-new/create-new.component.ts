@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 import { MedicineDtoAdmin, MedicineDto, MedicineControllerService } from '../../../typescript-angular-client';
 import { ToastrService } from '../sharedmodule/toast';
+import { Logger } from '../../log.service';
 
 @Component({
   selector: 'ngx-create-new',
@@ -12,6 +13,7 @@ import { ToastrService } from '../sharedmodule/toast';
 export class CreateNewComponent implements OnInit {
   rfContact: FormGroup;
   constructor(private medicineBuilder: FormBuilder,
+    private log:Logger,
     private medicineControllerService: MedicineControllerService  ,
     private toast:ToastrService) { }
 
@@ -34,22 +36,22 @@ export class CreateNewComponent implements OnInit {
   onSubmit() {
     // Do something awesome
     let temp: MedicineDtoAdmin = {};
-    console.log(temp);
+    this.log.logAny(temp);
     let medicine = this.rfContact.value;
-    console.log(medicine);
-    console.log(this.rfContact);
+    this.log.log(medicine);
+    this.log.logAny(this.rfContact);
     // this.rfContact.reset();
-    console.log(medicine);
-    console.log("Create ...");
+    this.log.log(medicine);
+    this.log.log("Create ...");
     this.medicineControllerService.createNewOneUsingPOST(medicine).subscribe(
       result => {
-        console.log(result);
+        this.log.logAny(result);
         this.toast.notify(1,"Thành công","Thêm thành công");
 
       },
       error=>{
-        console.log(error);
-        console.log("Error: "+error);
+        this.log.log(error);
+        this.log.log("Error: "+error);
         if(error.status!==200){
           this.toast.notify(4,"Không thành công",error.error.message);
         }

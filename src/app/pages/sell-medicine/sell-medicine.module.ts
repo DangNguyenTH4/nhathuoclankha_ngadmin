@@ -11,6 +11,9 @@ import { PDFExportModule } from '@progress/kendo-angular-pdf-export';
 import { GridModule } from '@progress/kendo-angular-grid';
 import { IntlModule } from '@progress/kendo-angular-intl';
 import { InvoiceComponent } from './invoice/invoice.component';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { JwtInterceptorService } from '../../service/jwt.interceptor.service';
+import { MyCoreModule } from '../../service/core2';
 // import { TablesRoutingModule, routedComponents } from './tables-routing.module';
 
 @NgModule({
@@ -36,7 +39,8 @@ import { InvoiceComponent } from './invoice/invoice.component';
     NbIconModule,
     IntlModule,
     GridModule,
-    PDFExportModule
+    PDFExportModule,
+    MyCoreModule
 
   ],
   declarations: [
@@ -45,7 +49,14 @@ import { InvoiceComponent } from './invoice/invoice.component';
   ],
   entryComponents:[
     
-  ]
+  ],
+  providers:[  
+  //   {
+  //   provide: HTTP_INTERCEPTORS,
+  //   useClass: JwtInterceptorService,
+  //   multi: true,
+  // }
+]
   
 })
 export class SellMedicineModule { }
