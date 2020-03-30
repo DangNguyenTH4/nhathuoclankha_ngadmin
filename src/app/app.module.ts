@@ -22,10 +22,7 @@ import {
 import { NbTokenStorage, NbTokenService, NbAuthModule, NbPasswordAuthStrategy, NbAuthJWTToken } from '@nebular/auth';
 import { CoreModule } from './@core/core.module';
 import { environment } from '../environments/environment';
-import { AuthService } from './service/auth-service.service';
 import { AuthenticateControllerService } from '../typescript-angular-client';
-import { JwtInterceptorService, authInterceptorProviders } from './service/jwt.interceptor.service';
-import { MyCoreModule } from './service/core2';
 import { ToastrService } from './pages/sharedmodule/toast';
 @NgModule({
   declarations: [AppComponent], 

@@ -1,35 +1,49 @@
 import { NbMenuItem } from '@nebular/theme';
 import { CommonData } from '../common/common';
+import { Title } from '@angular/platform-browser';
+class TitleMenu{
+  static readonly SELLMEDICINE = 'Tạo hóa đơn bán hàng';
+  static readonly IMPORTMEDICINE = 'Tạo hóa đơn nhập hàng';
+  static readonly REPORT = 'Báo cáo / Thống kê';
+  static readonly REPORTDAILY = 'Thống kê theo ngày';
+  static readonly HISTORYSELL = 'Lịch sử bán hàng';
+  static readonly HISTORYIMPORT = 'Lịch sử nhập hàng';
+  static readonly LISTMEDICINE = 'Danh sách các thuốc';
+}
 
 export const MENU_ITEMS_ALL: NbMenuItem[] = [
   {
-    title: 'Bán thuốc',
+    title: TitleMenu.SELLMEDICINE,
     icon: 'shopping-cart-outline',
     link: '/'+CommonData.StorePagePrefix+'/sell-medicine',
     home: true,
   },
   {
-    title: 'Nhập thuốc',
+    title: TitleMenu.IMPORTMEDICINE,
     icon: 'shopping-cart-outline',
     link: '/'+CommonData.StorePagePrefix+'/import-medicine',
     home: true,
   },
   {
-    title: 'Báo cáo',
+    title: TitleMenu.REPORT,
     icon: 'shopping-cart-outline',
       children: [
      
       {
-        title: 'Báo cáo 1',
+        title: TitleMenu.REPORTDAILY,
         link:  '/'+CommonData.StorePagePrefix+'/report/report1',
       },
       {
-        title: 'Lịch sử nhập hàng',
+        title: TitleMenu.HISTORYSELL,
         link:  '/'+CommonData.StorePagePrefix+'/report/history-import',
       },
       {
-        title: 'Lịch sử bán hàng',
+        title: TitleMenu.HISTORYIMPORT,
         link:  '/'+CommonData.StorePagePrefix+'/report/history-sell-order',
+      },
+      {
+        title: TitleMenu.LISTMEDICINE,
+        link:  '/'+CommonData.StorePagePrefix+'/admin/list-medicine',
       },
 
     ]
@@ -37,24 +51,24 @@ export const MENU_ITEMS_ALL: NbMenuItem[] = [
 ];
 export const MENU_ITEMS_STAFF: NbMenuItem[] = [
   {
-    title: 'Bán thuốc',
+    title: TitleMenu.SELLMEDICINE,
     icon: 'shopping-cart-outline',
     link: '/'+CommonData.StorePagePrefix+'/sell-medicine',
     home: true,
   },
   {
-    title: 'Nhập thuốc',
+    title: TitleMenu.IMPORTMEDICINE,
     icon: 'shopping-cart-outline',
     link: '/'+CommonData.StorePagePrefix+'/import-medicine',
     home: true,
   },
   {
-    title: 'Báo cáo',
+    title: TitleMenu.REPORT,
     icon: 'shopping-cart-outline',
       children: [
      
       {
-        title: 'Lịch sử bán hàng',
+        title: TitleMenu.HISTORYSELL,
         link:  '/'+CommonData.StorePagePrefix+'/report/myhistory-sell',
       },
 

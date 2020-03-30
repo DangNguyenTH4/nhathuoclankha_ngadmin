@@ -15,17 +15,17 @@ const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
 @Component({
   selector: 'ngx-my-sell-history',
   templateUrl: './my-sell-history.component.html',
-  styleUrls: ['../scss.file.scss','../css.file.css'],
+  styleUrls: ['../scss.file.scss', '../css.file.css'],
   encapsulation: ViewEncapsulation.None,
   providers: [AdminControllerService]
 })
 export class MySellHistoryComponent implements OnInit {
   public formatOptions: any = Intl.NumberFormat('vi-vn', { style: 'currency', currency: 'Vnd', currencyDisplay: 'name' });
   constructor(private sellMedicineControllerService: SellMedicineControllerService,
-    private authService : AuthService
+    private authService: AuthService
     , private log: Logger,
     private dialogService: NbDialogService,
-    private app : AppComponent
+    private app: AppComponent
   ) {
     this.sellMedicineControllerService.reportMyHistorySellGET(this.authService.getUserName()).subscribe(data => {
       this.loadHistoryImport(data);
@@ -40,9 +40,12 @@ export class MySellHistoryComponent implements OnInit {
     return GenerateFileName.genNormalReportName('homNay', 'vaiHomNua', '') + '.pdf';
   }
   testPrintDate() {
-    this.sellMedicineControllerService.reportMyHistorySellGET(this.authService.getUserName()).subscribe(data => {
+    // this.sellMedicineControllerService.reportMyHistorySellGET(this.authService.getUserName()).subscribe(data => {
+    //   this.loadHistoryImport(data);
+    // });
+    this.sellMedicineControllerService.reportMyHistorySellBetweenDays(DateUtils.toStartOfDate(this.fromDate).toISOString(), DateUtils.toEndOfDate(this.toDate).toISOString()).subscribe(data => {
       this.loadHistoryImport(data);
-    });
+    })
   }
   public fromDate: Date = new Date();
   public toDate: Date = new Date();
@@ -62,7 +65,7 @@ export class MySellHistoryComponent implements OnInit {
       console.log(historySample);
       this.products.push(historySample);
     }
-    let historySample :HistoryDto = {customerName:'Tổng cộng: ',total:sum*1000};
+    let historySample: HistoryDto = { customerName: 'Tổng cộng: ', total: sum * 1000 };
     this.products.push(historySample);
   }
   // cellClickEvent(event){
@@ -82,18 +85,18 @@ export class MySellHistoryComponent implements OnInit {
       console.log(bdata);
       // this.source.load(bdata[0].listMedicines);
 
-      let dataNew :InvoiceRow[]  =[];
-      for(let dto of bdata.listInvoice){
-        dataNew.push(new InvoiceRow(dto.productName,dto.unitPrice,dto.addMore,dto.amount,dto.unit));
+      let dataNew: InvoiceRow[] = [];
+      for (let dto of bdata.listInvoice) {
+        dataNew.push(new InvoiceRow(dto.productName, dto.unitPrice, dto.addMore, dto.amount, dto.unit));
       }
-       this.dialogService.open(InvoiceCommonComponent,
-      {
-        context: { data: dataNew, customer: {name:event.dataItem.customerName} },
-        hasBackdrop: true,
-      });
+      this.dialogService.open(InvoiceCommonComponent,
+        {
+          context: { data: dataNew, customer: { name: event.dataItem.customerName } },
+          hasBackdrop: true,
+        });
     });
 
-   
+
   }
 }
 export const invoiceData = [

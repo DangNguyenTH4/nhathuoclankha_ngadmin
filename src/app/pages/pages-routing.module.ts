@@ -38,6 +38,12 @@ const routes: Routes = [{
         .then(m => m.ReportModule),
     },
     {
+      path: 'admin',
+      canActivate:[AuthGuardService],
+      loadChildren: () => import('./admin/admin-store.module')
+        .then(m => m.AdminStoreModule),
+    },
+    {
       path: '',
       redirectTo: '',
       pathMatch: 'full',

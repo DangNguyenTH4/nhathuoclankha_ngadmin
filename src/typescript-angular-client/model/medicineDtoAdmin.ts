@@ -16,9 +16,18 @@ import { Price } from './price';
 export interface MedicineDtoAdmin { 
     code?: string;
     company?: Company;
+    
     id?: number;
     medicineName?: string;
     price?: Price;
+    
     quantityExsiting?: number;
     unit?: string;
+
+    // for display list:
+    companyName?: String ;
+    priceBought?:number;
+    priceSell?:number;
+   
+    dateCreate?:Date;
 }

@@ -1,0 +1,51 @@
+<kendo-grid
+[data]="products"
+        [pageSize]="state.take"
+        [skip]="state.skip"
+        [sort]="state.sort"
+        [filter]="state.filter"
+        [sortable]="true"
+        [pageable]="true"
+        filterable="menu"
+        (dataStateChange)="dataStateChange($event)"
+
+>
+  <ng-template kendoGridToolbarTemplate>
+    <div class="row">
+      <div class="col-md-3">
+        <button nbButton status="danger" (click)="testPrintDate()"> Truy xuất </button>
+        <button kendoGridPDFCommand icon="file-pdf">In</button>
+      </div>
+    </div>
+  </ng-template>
+  <kendo-grid-column field="code" title="Mã thuốc" >
+  </kendo-grid-column>
+  <kendo-grid-column field="companyName" title="Công ty">
+  </kendo-grid-column>
+  <kendo-grid-column field="priceBought" title="Giá nhập" filter="numeric">
+  </kendo-grid-column>
+  <kendo-grid-column field="priceSell" title="Giá bán" filter="numeric">
+  </kendo-grid-column>
+  <kendo-grid-column field="unit" title="Đơn vị">
+  </kendo-grid-column>
+  <kendo-grid-column field="quantityExsiting" title="Số lượng còn" filter="numeric">
+  </kendo-grid-column>
+  <kendo-grid-column field="dateCreate" title="Ngày tạo" filter="date">
+  </kendo-grid-column>
+
+  <kendo-grid-pdf fileName="{{genFileReport()}}" [allPages]="true" paperSize="A4" [repeatHeaders]="true"
+    [landscape]="true">
+    <kendo-grid-pdf-margin top="2cm" right="1cm" left="1cm" bottom="2cm"></kendo-grid-pdf-margin>
+    <ng-template kendoGridPDFTemplate let-pageNum="pageNum" let-totalPages="totalPages">
+      <div class="page-template">
+        <div class="header">
+          <div style="float: right">Trang {{ pageNum }} / {{ totalPages }}</div>
+          Nhà thuốc thú Y Lan Kha
+        </div>
+        <div class="footer">
+          Trang {{ pageNum }} / {{ totalPages }}
+        </div>
+      </div>
+    </ng-template>
+  </kendo-grid-pdf>
+</kendo-grid>

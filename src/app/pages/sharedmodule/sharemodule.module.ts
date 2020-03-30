@@ -10,7 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { InvoiceCommonComponent } from './invoice-common/invoice-common.component';
 import { PDFExportModule } from '@progress/kendo-angular-pdf-export';
 import { IntlModule } from '@progress/kendo-angular-intl';
-import { GridModule } from '@progress/kendo-angular-grid';
+import { GridModule, PDFModule } from '@progress/kendo-angular-grid';
 const ENTRY_COMPONENTS = [
 
 ];
@@ -28,7 +28,7 @@ const ENTRY_COMPONENTS = [
         NbWindowModule.forChild(),
         // IntlModule,
         GridModule,
-        // PDFExportModule,
+        // PDFModule,
 
 
     ],

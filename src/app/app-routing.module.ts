@@ -10,12 +10,6 @@ const routes: Routes = [
     loadChildren:   './pages/pages.module#PagesModule'
   },
   {
-    path: 'admin',
-    canActivate:[AuthGuardService],
-    loadChildren: () => import('./admin/admin.module')
-      .then(m => m.AdminModule),
-  },
-  {
     path:'auth',
     loadChildren: ()=> import('./auth/auth/auth.module').then(m=>m.AuthModule),
   },
