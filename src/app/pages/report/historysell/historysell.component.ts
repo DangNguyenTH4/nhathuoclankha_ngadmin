@@ -15,12 +15,6 @@ const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
 })
 export class HistorysellComponent implements OnInit {
   public formatOptions: any = Intl.NumberFormat('vi-vn', { style: 'currency', currency: 'Vnd', currencyDisplay: 'name' });
-
-  // {
-  //   style: 'currency',
-  //   currency: 'Vnd',
-  //   currencyDisplay: 'name'
-  // };
   constructor(private adminControllerService: AdminControllerService
     , private log: Logger
   ) {

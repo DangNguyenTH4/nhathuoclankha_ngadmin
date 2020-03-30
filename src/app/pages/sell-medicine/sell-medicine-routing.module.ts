@@ -3,32 +3,23 @@ import { Routes, RouterModule } from '@angular/router';
 import { SellMedicineComponent } from './sell-medicine.component';
 import { DialogNamePromptComponent } from './dialog/dialog-name-prompt/dialog-name-prompt.component';
 import { InvoiceComponent } from './invoice/invoice.component';
+import { SellComponent } from './sell/sell.component';
 
 
 const routes: Routes = [{
   path: '',
-  component: SellMedicineComponent,
+  component: SellComponent,
   children: [
-    {
-      path: 'smart-table',
-      component: SellMedicineComponent,
-    },
-    {
-      path: 'dialog',
-      component: DialogNamePromptComponent,
-    },
+
     {
       path: 'invoice',
       component: InvoiceComponent,
     },
-    {
-        path:'**',
-        component: InvoiceComponent,
-        // redirectTo:'',
-        // pathMatch:'full'
-    }
+   
   ],
-}];
+},
+
+];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

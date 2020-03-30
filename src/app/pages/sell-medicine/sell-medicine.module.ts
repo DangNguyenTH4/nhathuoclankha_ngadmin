@@ -14,6 +14,7 @@ import { InvoiceComponent } from './invoice/invoice.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { JwtInterceptorService } from '../../service/jwt.interceptor.service';
 import { MyCoreModule } from '../../service/core2';
+import { SellComponent } from './sell/sell.component';
 // import { TablesRoutingModule, routedComponents } from './tables-routing.module';
 
 @NgModule({
@@ -45,10 +46,10 @@ import { MyCoreModule } from '../../service/core2';
   ],
   declarations: [
       SellMedicineComponent,
-      DialogNamePromptComponent, InvoiceComponent
+      DialogNamePromptComponent, InvoiceComponent, SellComponent
   ],
   entryComponents:[
-    
+    SellComponent
   ],
   providers:[  
   //   {

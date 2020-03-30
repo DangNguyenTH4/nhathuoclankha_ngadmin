@@ -93,6 +93,7 @@ import { ToastrService } from './pages/sharedmodule/toast';
   bootstrap: [AppComponent],
   providers:[AuthenticateControllerService,ToastrService
   ],
+  entryComponents:[AppComponent]
   
 })
 export class AppModule {

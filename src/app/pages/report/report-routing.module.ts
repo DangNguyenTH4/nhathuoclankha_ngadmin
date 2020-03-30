@@ -8,6 +8,7 @@ import { ReportComponent } from './report.component';
 import { NormalReportComponent } from './normal-report/normal-report.component';
 import { HistoryimportComponent } from './historyimport/historyimport.component';
 import { HistorysellComponent } from './historysell/historysell.component';
+import { MySellHistoryComponent } from './my-sell-history/my-sell-history.component';
 
 const routes: Routes = [{
   path: '',
@@ -34,6 +35,10 @@ const routes: Routes = [{
     }, {
       path: 'history-sell-order',
       component: HistorysellComponent,
+    }
+    , {
+      path: 'myhistory-sell',
+      component: MySellHistoryComponent,
     }
   ],
 }];

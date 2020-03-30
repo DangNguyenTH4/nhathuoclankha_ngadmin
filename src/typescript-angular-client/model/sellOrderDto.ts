@@ -11,12 +11,14 @@
  */
 import { CustomerDto } from './customerDto';
 import { MedicineDto } from './medicineDto';
+import { InvoiceDto } from './invoiceDto';
 
 
 export interface SellOrderDto {
     customer?: CustomerDto;
     id?: number;
     listMedicines?: Array<MedicineDto>;
+    listInvoice?: Array<InvoiceDto>;
     time?: Date;
     total?: number;
     seller?:String;

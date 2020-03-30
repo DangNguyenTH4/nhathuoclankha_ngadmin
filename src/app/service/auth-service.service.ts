@@ -45,7 +45,7 @@ export class AuthService {
   }
   logout(){
     this.tokenStorage.clear();
-    window.location.reload();
+    this.router.navigate(['auth/login']);
   }
   getToken():string{
     return this.tokenStorage.getToken();

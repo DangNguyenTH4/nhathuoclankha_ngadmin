@@ -8,8 +8,10 @@ import { Subject } from 'rxjs';
 import { NbAuthJWTToken, NbAuthService, NbTokenService } from '@nebular/auth';
 import { TokenStorageService } from '../../../service/tokenstorage.service';
 import { AuthService } from '../../../service/auth-service.service';
+import { Router } from '@angular/router';
 const LOGOUT= "Đăng xuất";
 const PROFILE="Tài khoản";
+const SelfHistorySell="Hóa đơn hôm nay"
 @Component({
   selector: 'ngx-header',
   styleUrls: ['./header.component.scss'],
@@ -43,7 +45,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   currentTheme = 'default';
 
-  userMenu = [ { title: PROFILE }, { title: LOGOUT} ];
+  userMenu = [ 
+    { title: PROFILE }, 
+    {title:SelfHistorySell},
+    { title: LOGOUT},
+     ];
 
   constructor(
               private sidebarService: NbSidebarService,
@@ -52,7 +58,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
               private userService: UserData,
               private layoutService: LayoutService,
               private breakpointService: NbMediaBreakpointsService,
-              private authCustomerService : AuthService) {
+              private authCustomerService : AuthService,
+              private router: Router) {
                
   }
   onItemSelection(title){
@@ -63,7 +70,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
     else if(title===PROFILE){
       console.log(title);
-    }else{
+    }
+    else if(title===SelfHistorySell){
+      this.router.navigate(['store/report/myhistory-sell']);
+    }
+    else{
       console.log("Nothing");
     }
   }

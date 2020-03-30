@@ -39,13 +39,15 @@ export class JwtInterceptorService implements HttpInterceptor {
               return Observable.throw(error);
             case 401:
               console.log(401);
+              this.token.clear();
               this.router.navigate(['auth/login']);
               return Observable.throw(error);
             case 403:
               console.log(403);
               this.toast.notify(4,"Quyền","Bạn không có quyền truy cập.");
               return Observable.throw(error);
-
+            case 500:
+              this.toast.notify(4,"Lỗi",error.error.message);
           }
         }else{
 

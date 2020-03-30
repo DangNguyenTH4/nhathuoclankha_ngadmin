@@ -26,7 +26,6 @@ import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables'
 import { Configuration }                                     from '../configuration';
 import { environment } from '../../environments/environment';
 import { TokenStorageService } from '../../app/service/tokenstorage.service';
-import { CommonData } from '../../app/common/common';
 
 
 @Injectable({
@@ -38,7 +37,7 @@ export class SellMedicineControllerService {
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
 
-    constructor(private tokenStorage:TokenStorageService,protected httpClient: HttpClient, @Optional()@Inject(BASE_PATH) basePath: string, @Optional() configuration: Configuration) {
+    constructor(protected httpClient: HttpClient, @Optional()@Inject(BASE_PATH) basePath: string, @Optional() configuration: Configuration) {
         if (basePath) {
             this.basePath = basePath;
         }
@@ -46,14 +45,6 @@ export class SellMedicineControllerService {
             this.configuration = configuration;
             this.basePath = basePath || configuration.basePath || this.basePath;
         }
-        // if(this.defaultHeaders){
-        //     let header = new Headers();
-        //     let a = this.tokenStorage.getToken();
-        //     header.set(CommonData.AUTHENTICATION,a);
-        //     this.defaultHeaders = this.defaultHeaders.set(CommonData.AUTHENTICATION,a);
-        //     this.log.log(this.defaultHeaders);
-        //     // this.defaultHeaders = new HttpHeaders(header);
-        // }
     }
 
     /**
@@ -206,5 +197,100 @@ export class SellMedicineControllerService {
             }
         );
     }
+      /**
+   * my history sell
+   * @param seller 
+   * @param observe 
+   * @param reportProgress 
+   */ 
+  public reportMyHistorySellGET(seller: string,observe?: 'body', reportProgress?: boolean): Observable<Array<SellOrderDto>>;
+  public reportMyHistorySellGET(seller: string, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<SellOrderDto>>>;
+  public reportMyHistorySellGET(seller: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<SellOrderDto>>>;
+  public reportMyHistorySellGET(seller: string, observe: any = 'body', reportProgress: boolean = false): Observable<any> {
 
+      if (seller === null || seller === undefined) {
+          throw new Error('Required parameter seller was null or undefined when calling reportUsingGET.');
+      }
+
+     
+
+      let queryParameters = new HttpParams({ encoder: new CustomHttpUrlEncodingCodec() });
+      if (seller !== undefined && seller !== null) {
+          queryParameters = queryParameters.set('seller', <any>seller);
+      }
+      
+
+      let headers = this.defaultHeaders;
+
+      // to determine the Accept header
+      let httpHeaderAccepts: string[] = [
+          '*/*'
+      ];
+      const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+      if (httpHeaderAcceptSelected != undefined) {
+          headers = headers.set('Accept', httpHeaderAcceptSelected);
+      }
+
+      // to determine the Content-Type header
+      const consumes: string[] = [
+      ];
+
+      return this.httpClient.get<Array<SellOrderDto>>(`${this.basePath}/sell-medicine/myhistory-sell`,
+          {
+              params: queryParameters,
+              withCredentials: this.configuration.withCredentials,
+              headers: headers,
+              observe: observe,
+              reportProgress: reportProgress
+          }
+      );
+  }
+  /**
+  * my history sell
+  * @param seller 
+  * @param observe 
+  * @param reportProgress 
+  */ 
+ public reportMyHistorySellByIdGET(sellOrderId: string,observe?: 'body', reportProgress?: boolean): Observable<SellOrderDto>;
+ public reportMyHistorySellByIdGET(sellOrderId: string, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<SellOrderDto>>;
+ public reportMyHistorySellByIdGET(sellOrderId: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<SellOrderDto>>;
+ public reportMyHistorySellByIdGET(sellOrderId: string, observe: any = 'body', reportProgress: boolean = false): Observable<any> {
+
+     if (sellOrderId === null || sellOrderId === undefined) {
+         throw new Error('Required parameter seller was null or undefined when calling reportUsingGET.');
+     }
+
+    
+
+     let queryParameters = new HttpParams({ encoder: new CustomHttpUrlEncodingCodec() });
+     if (sellOrderId !== undefined && sellOrderId !== null) {
+         queryParameters = queryParameters.set('sellOrderId', <any>sellOrderId);
+     }
+     
+
+     let headers = this.defaultHeaders;
+
+     // to determine the Accept header
+     let httpHeaderAccepts: string[] = [
+         '*/*'
+     ];
+     const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+     if (httpHeaderAcceptSelected != undefined) {
+         headers = headers.set('Accept', httpHeaderAcceptSelected);
+     }
+
+     // to determine the Content-Type header
+     const consumes: string[] = [
+     ];
+
+     return this.httpClient.get<Array<SellOrderDto>>(`${this.basePath}/sell-medicine/getSellOrder`,
+         {
+             params: queryParameters,
+             withCredentials: this.configuration.withCredentials,
+             headers: headers,
+             observe: observe,
+             reportProgress: reportProgress
+         }
+     );
+ }
 }

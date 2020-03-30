@@ -240,6 +240,6 @@ export class MedicineControllerService {
             }
         );
     }
-   
+
 
 }

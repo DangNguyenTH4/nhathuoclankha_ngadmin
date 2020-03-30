@@ -67,8 +67,8 @@ public saveRole(role:string){
   // localStorage.removeItem(CommonData.ROLE_KEY);
   // localStorage.setItem(CommonData.ROLE_KEY,role);
 }
-public getrole(){
-  sessionStorage.getItem(CommonData.ROLE_KEY);
+public getRole():string{
+  return sessionStorage.getItem(CommonData.ROLE_KEY);
 }
 
 public getToken(): string {

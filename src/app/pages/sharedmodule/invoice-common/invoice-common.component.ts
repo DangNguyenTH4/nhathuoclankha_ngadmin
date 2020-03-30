@@ -4,15 +4,15 @@ import { CustomerDto } from '../../../../typescript-angular-client';
 import { Logger } from '../../../log.service';
 
 @Component({
-  selector: 'my-invoice',
-  templateUrl: './invoice.component.html',
-  styleUrls: ['./invoice.component.scss'],
-  providers:[Logger]
+  selector: 'ngx-invoice-common',
+  templateUrl: './invoice-common.component.html',
+  styleUrls: ['./invoice-common.component.scss']
 })
-export class InvoiceComponent {
+export class InvoiceCommonComponent implements OnInit {
+  constructor() {
 
-  constructor(private logger:Logger) {
-
+  }
+  ngOnInit(): void {
   }
   @Input()
   autoCheckDate:boolean=true;
@@ -82,4 +82,3 @@ export class InvoiceRow {
     public unit: string,
   ) { }
 }
-

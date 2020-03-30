@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { ChartModule } from 'angular2-chartjs';
@@ -33,6 +33,9 @@ import { FormsModule } from '@angular/forms';
 import { HistoryimportComponent } from './historyimport/historyimport.component';
 import { HistorysellComponent } from './historysell/historysell.component';
 import { MyCoreModule } from '../../service/core2';
+import { MySellHistoryComponent } from './my-sell-history/my-sell-history.component';
+import { IntlModule } from '@progress/kendo-angular-intl';
+import { PDFExportModule } from '@progress/kendo-angular-pdf-export';
 
 const components = [
   ChartjsBarComponent,
@@ -58,7 +61,7 @@ const components = [
 
 @NgModule({
   imports: [
-
+    SharedModule,
     ThemeModule,
     ReportRoutingModule,
     NgxEchartsModule,
@@ -75,9 +78,11 @@ const components = [
     FormsModule,
     MyCoreModule,
     
+    
+    
   ],
-  declarations: [...routedComponents, ...components, NormalReportComponent, HistoryimportComponent, HistorysellComponent,
-  
+  declarations: [...routedComponents, ...components, NormalReportComponent, HistoryimportComponent, HistorysellComponent, MySellHistoryComponent,
   ],
+  entryComponents:[]
 })
 export class ReportModule {}
