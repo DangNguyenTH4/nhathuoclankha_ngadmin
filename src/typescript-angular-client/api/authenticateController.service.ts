@@ -11,7 +11,7 @@
  */
 /* tslint:disable:no-unused-variable member-ordering */
 
-import { Inject, Injectable, Optional } from '@angular/core';
+import { Inject, Injectable, Optional, SkipSelf } from '@angular/core';
 import {
     HttpClient, HttpHeaders, HttpParams,
     HttpResponse, HttpEvent
@@ -29,7 +29,9 @@ import { JwtRequest } from '../model/JwtRequest';
 import { JwtResponse } from '../model/JwtResponse';
 
 
-@Injectable()
+@Injectable({
+    providedIn: "root"
+  })
 export class AuthenticateControllerService {
 
     protected basePath = environment.host;

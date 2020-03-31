@@ -11,7 +11,7 @@
  */
 /* tslint:disable:no-unused-variable member-ordering */
 
-import { Inject, Injectable, Optional }                      from '@angular/core';
+import { Inject, Injectable, Optional, SkipSelf }                      from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams,
          HttpResponse, HttpEvent }                           from '@angular/common/http';
 import { CustomHttpUrlEncodingCodec }                        from '../encoder';
@@ -26,8 +26,11 @@ import { environment } from '../../environments/environment';
 import { MedicineDto } from '../model/models';
 
 
-@Injectable()
+@Injectable({
+    providedIn: "root"
+  })
 export class CustomerControllerService {
+    
 
     protected basePath = environment.host;
     public defaultHeaders = new HttpHeaders();
@@ -142,6 +145,53 @@ export class CustomerControllerService {
         ];
 
         return this.httpClient.get<string>(`${this.basePath}/customer/list-phone`,
+            {
+                params: queryParameters,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * getListName
+     * 
+     * @param phone phone
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public getListName(name: string, observe?: 'body', reportProgress?: boolean): Observable<string[]>;
+    public getListName(name: string, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<string>>;
+    public getListName(name: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<string>>;
+    public getListName(name: string, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+
+        if (name === null || name === undefined) {
+            throw new Error('Required parameter phone was null or undefined when calling findCustomerByPhoneUsingGET.');
+        }
+
+        let queryParameters = new HttpParams({encoder: new CustomHttpUrlEncodingCodec()});
+        if (name !== undefined && name !== null) {
+            queryParameters = queryParameters.set('name', <any>name);
+        }
+
+        let headers = this.defaultHeaders;
+
+        // to determine the Accept header
+        let httpHeaderAccepts: string[] = [
+            '*/*'
+        ];
+        const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+        ];
+
+        return this.httpClient.get<string>(`${this.basePath}/customer/list-name`,
             {
                 params: queryParameters,
                 withCredentials: this.configuration.withCredentials,

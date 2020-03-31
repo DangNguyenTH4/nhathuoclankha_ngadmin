@@ -14,10 +14,8 @@ export class ToastrService {
   constructor(private toastrService: NbToastrService) {}
 
   config: ToasterConfig;
-
-  index = 1;
   destroyByClick = true;
-  duration = 2000;
+  duration = 4000;
   hasIcon = true;
   position: NbGlobalPosition = NbGlobalPhysicalPosition.TOP_RIGHT;
   preventDuplicates = false;
@@ -83,12 +81,10 @@ export class ToastrService {
       position: this.position,
       preventDuplicates: this.preventDuplicates,
     };
-    const titleContent = title ? `. ${title}` : '';
-
-    this.index += 1;
+    const titleContent = title ? `${title}` : '';
     this.toastrService.show(
       body,
-      `Toast ${this.index}${titleContent}`,
+      `${titleContent}`,
       config);
   }
 }

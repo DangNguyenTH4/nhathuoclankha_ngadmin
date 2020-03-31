@@ -10,4 +10,7 @@ export class GenerateFileName{
     public static genNormalReportName(fromDate,toDate,something):string{
         return 'Báo cáo '+something+fromDate+'-'+toDate;
     }
+    public static printListMedicine():string{
+        return 'Danh sách thuốc';
+    }
 }

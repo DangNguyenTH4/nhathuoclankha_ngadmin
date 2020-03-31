@@ -3,10 +3,11 @@ import { TablesComponent } from '../tables/tables.component';
 import { TablesModule } from '../tables/tables.module';
 import { LocalDataSource } from 'ng2-smart-table';
 import { SmartTableData } from '../../@core/data/smart-table';
-import {  MedicineControllerService, MedicineDto, SellOrderDto, CustomerDto, ImportMedicineControllerService } from '../../../typescript-angular-client';
+import {  MedicineControllerService, MedicineDto, CustomerDto, ImportMedicineControllerService } from '../../../typescript-angular-client';
 import { NbDialogService } from '@nebular/theme';
 import { ImportOrderDto } from '../../../typescript-angular-client/model/importOrderDto';
 import { ToastrService } from '../sharedmodule/toast';
+import { Logger } from '../../log.service';
 
 @Component({
   selector: 'ngx-import-medicine',
@@ -23,6 +24,7 @@ export class ImportMedicineComponent implements OnInit {
 
   }
   constructor(
+    private log:Logger,
     private importMedicineControllerService: ImportMedicineControllerService,
     private medicineControllerService: MedicineControllerService
     , private dialogService: NbDialogService,
@@ -129,7 +131,7 @@ export class ImportMedicineComponent implements OnInit {
   }
   source: LocalDataSource = new LocalDataSource();
   notifyBeforeCreate(dialog: TemplateRef<any>) {
-    console.log(this.date.toISOString());
+    this.log.log(this.date.toISOString());
     let message = this.validateWhenCreateOrder();
     if (message !== "ok") {
       // this.notify(message);
@@ -142,18 +144,16 @@ export class ImportMedicineComponent implements OnInit {
           this.createOrder();    
       });
   }
-  testPrintDate(){
-    console.log(this.date.toISOString());
-    console.log(this.date.toLocaleString());
-    console.log(this.date.toLocaleDateString());
-    console.log(this.date.toLocaleTimeString());
-  }
   date:Date=new Date();
   createOrder() {
     
     let importOrderDto: ImportOrderDto = { id: null,importDate:this.date,listMedicineImport:[],staffName:'dangnt'};
     this.source.getAll().then(
       data => {
+        if(data.length===0){
+          this.toastService.notify(4,"Lỗi","Chưa có thuốc nào được nhập!");
+          return ;
+        }
         //Map data from datasource to Dto
         data.forEach(e => {
           importOrderDto.listMedicineImport.push({
@@ -174,7 +174,7 @@ export class ImportMedicineComponent implements OnInit {
           this.toastService.notify(1,"Thành công","Thêm thành công!");
         },
         error=>{
-          this.toastService.notify(5,"Lỗi",error);
+          this.toastService.notify(4,"Lỗi",error.error.message);
         });
       });
   }

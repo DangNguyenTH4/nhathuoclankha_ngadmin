@@ -6,7 +6,7 @@ import { DateUtils } from '../../../common/utils/DateUtils';
 @Component({
   selector: 'ngx-normal-report',
   templateUrl: './normal-report.component.html',
-  styleUrls: ['./normal-report.component.scss', './page-template.css'],
+  styleUrls: ['../scss.file.scss','../css.file.css'],
   encapsulation: ViewEncapsulation.None,
   providers: [AdminControllerService]
 })
@@ -25,7 +25,7 @@ export class NormalReportComponent implements OnInit {
   genFileReport(): string {
     return GenerateFileName.genNormalReportName('homNay', 'vaiHomNua', '') + '.pdf';
   }
-  testPrintDate() {
+  getReport() {
     this.adminControllerService.reportUsingGET(DateUtils.toStartOfDate(this.fromDate).toISOString(), DateUtils.toEndOfDate(this.toDate).toISOString()).subscribe(data => {
       this.products = data;
     });

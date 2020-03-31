@@ -6,31 +6,38 @@ import { ToastrComponent } from './toastr/toastr.component';
 import { ChartjsLineComponent } from './chartjs-line.component';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { ChartModule } from 'angular2-chartjs';
+import { HttpClientModule } from '@angular/common/http';
+import { InvoiceCommonComponent } from './invoice-common/invoice-common.component';
+import { PDFExportModule } from '@progress/kendo-angular-pdf-export';
+import { IntlModule } from '@progress/kendo-angular-intl';
+import { GridModule, PDFModule } from '@progress/kendo-angular-grid';
 const ENTRY_COMPONENTS = [
-    
+
 ];
 @NgModule({
-    imports: [ 
+    imports: [
         NgxChartsModule,
 
         ChartModule,
         CommonModule
         , NbInputModule
         , NbCardModule
-        , NbButtonModule 
+        , NbButtonModule
         , NbDialogModule
         , NbDialogModule.forChild(),
         NbWindowModule.forChild(),
+        // IntlModule,
+        GridModule,
+        // PDFModule,
+
 
     ],
-    declarations: [DatetimePickerComponent,ToastrComponent,ChartjsLineComponent],
+    declarations: [DatetimePickerComponent, ToastrComponent, ChartjsLineComponent, InvoiceCommonComponent],
     exports: [
-        //  Com
-        DatetimePickerComponent,
-        ToastrComponent,
-        ChartjsLineComponent
+        InvoiceCommonComponent,
+
     ],
-    entryComponents: [
+    entryComponents: [InvoiceCommonComponent,
         ...ENTRY_COMPONENTS
     ],
 })

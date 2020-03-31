@@ -58,7 +58,7 @@ export class InvoiceComponent {
 }
 export class InvoiceRow {
   public get formatNumber(){
-    let a = this.unitPrice.toLocaleString('vi-vn');
+    let a = (this.unitPrice+ this.addMore).toLocaleString('vi-vn');
     return a;
   }
   public get formatTotalNumber(){

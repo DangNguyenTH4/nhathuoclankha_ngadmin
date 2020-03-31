@@ -11,3 +11,4 @@ export * from './importOrderDto';
 export * from './view';
 export * from './medicineDtoAdmin'
 export * from './reportDto';
+export * from './invoiceDto';

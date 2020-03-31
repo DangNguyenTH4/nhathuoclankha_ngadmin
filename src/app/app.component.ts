@@ -9,7 +9,8 @@ import { SeoService } from './@core/utils/seo.service';
 
 @Component({
   selector: 'ngx-app',
-  template: '<router-outlet></router-outlet>',
+  template: `
+  <router-outlet></router-outlet>`,
 })
 export class AppComponent implements OnInit {
 
@@ -21,5 +22,13 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     // this.analytics.trackPageViews();
     // this.seoService.trackCanonicalChanges();
+  }
+  public havePopup(isTurnOn:boolean){
+    console.log("hello");
+    if(isTurnOn){
+
+    }else{
+
+    }
   }
 }

@@ -8,6 +8,7 @@ import { ImportMedicineComponent } from './import-medicine.component';
 import { ImportMedicineRoutingModule } from './import-medicine-routing.module';
 import { ImportMedicineControllerService } from '../../../typescript-angular-client';
 import { SharedModule } from '../sharedmodule/sharemodule.module';
+import { MyCoreModule } from '../../service/core2';
 // import { TablesRoutingModule, routedComponents } from './tables-routing.module';
 
 @NgModule({
@@ -32,6 +33,7 @@ import { SharedModule } from '../sharedmodule/sharemodule.module';
     NbDatepickerModule,
     NbSelectModule,
     NbIconModule,
+    MyCoreModule,
 
   ],
   declarations: [
