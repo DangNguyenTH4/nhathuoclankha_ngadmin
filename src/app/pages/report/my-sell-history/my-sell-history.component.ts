@@ -91,12 +91,10 @@ export class MySellHistoryComponent implements OnInit {
       }
       this.dialogService.open(InvoiceCommonComponent,
         {
-          context: { data: dataNew, customer: { name: event.dataItem.customerName } },
+          context: { data: dataNew,sellDate:event.dataItem.sellDate, customer: { name: event.dataItem.customerName,traiDungThuoc:bdata.customer.traiDungThuoc } },
           hasBackdrop: true,
         });
     });
-
-
   }
 }
 export const invoiceData = [

@@ -8,6 +8,8 @@ import { Router } from '@angular/router';
 import { CommonData } from '../common/common';
 import { Logger } from '../log.service';
 import { ToastrService } from '../pages/sharedmodule/toast';
+import { RoleConstant } from './roleconstant';
+import { MENU_ITEMS_ACCOUNTANT } from '../pages/pages-menu';
 
 @Injectable({
   providedIn: 'root'
@@ -35,7 +37,7 @@ export class AuthService {
       this.wasAuthen=true;
       this.tokenStorage.saveRole(data.role);
       this.tokenStorage.saveUsername(data.name);
-      this.router.navigate(["store/sell-medicine"]);
+      this.navigateByRole(data.role);
       return "OK";
     },error=>{
       this.toast.notify(3,"Login failed!","Mật khẩu / tài khoản không đúng!");
@@ -60,5 +62,18 @@ export class AuthService {
   }
   getUserName(){
     return this.tokenStorage.getUsername();
+  }
+  navigateByRole(role:String){
+    if (role===RoleConstant.ROLEACCOUNTANT){
+      this.router.navigate(['/'+CommonData.StorePagePrefix+'/report/report1']);
+    } else if (role === RoleConstant.ROLEADMIN || 
+      role === RoleConstant.ROLEDIRECTOR || 
+      role === RoleConstant.ROLESTAFF){
+        this.router.navigate(['/'+CommonData.StorePagePrefix+"/sell-medicine"]);
+      }
+    else{
+      this.tokenStorage.clear();
+      this.router.navigate(['auth/login']);
+    }
   }
 }

@@ -2383,7 +2383,7 @@ var jsPDF = function (global) {
             // for safety, shouldn't normally be the case
             this.internal.write('/AcroForm ' + this.acroformPlugin.acroFormDictionaryRoot.objId + ' ' + 0 + ' R');
         } else {
-            this.log.log('Root missing...');
+            console.log('Root missing...');
         }
     };
 
@@ -3093,7 +3093,7 @@ AcroForm.PDFObject = function () {
                 }
             }
             if (!_objId) {
-                this.log.log("Couldn't create Object ID");
+                console.log("Couldn't create Object ID");
             }
             return _objId;
         },
@@ -3509,7 +3509,7 @@ AcroForm.internal.inherit(AcroForm.ChildClass, AcroForm.Field);
 
 AcroForm.RadioButton.prototype.setAppearance = function (appearance) {
     if (!('createAppearanceStream' in appearance && 'createMK' in appearance)) {
-        this.log.log("Couldn't assign Appearance to RadioButton. Appearance was Invalid!");
+        console.log("Couldn't assign Appearance to RadioButton. Appearance was Invalid!");
         return;
     }
     for (var i in this.__Kids) {
@@ -6596,7 +6596,7 @@ AcroForm.internal.setBitPosition = function (variable, position, value) {
             var v2Support = typeof this.pdf.internal.newObject2 === 'function';
 
             if (!v2Support) {
-                this.log.log('jsPDF v2 not enabled');
+                console.log('jsPDF v2 not enabled');
                 return;
             }
 
@@ -14186,8 +14186,8 @@ module.exports = LinearGradientContainer;
 
 },{"./color":3,"./gradientcontainer":9}],13:[function(_dereq_,module,exports){
 var logger = function() {
-    if (logger.options.logging && window.console && window.this.log.log) {
-        Function.prototype.bind.call(window.this.log.log, (window.console)).apply(window.console, [(Date.now() - logger.options.start) + "ms", "html2canvas:"].concat([].slice.call(arguments, 0)));
+    if (logger.options.logging && window.console && window.console.log) {
+        Function.prototype.bind.call(window.console.log, (window.console)).apply(window.console, [(Date.now() - logger.options.start) + "ms", "html2canvas:"].concat([].slice.call(arguments, 0)));
     }
 };
 

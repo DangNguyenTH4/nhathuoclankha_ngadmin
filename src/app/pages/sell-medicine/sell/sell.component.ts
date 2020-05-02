@@ -513,8 +513,12 @@ export class SellComponent implements OnInit {
       this.log.logAny(data);
       if (data) {
         this.customer = data;
-        this.changeEmossCheckbox(this.customer.name);
+       
+      }else{
+        this.customer.name='';
+        this.customer.traiDungThuoc='';
       }
+      this.changeEmossCheckbox(this.customer.name);
     });
     this.customerControllerService.getListBougthByPhoneUsingGet(PHONE + this.customer.phoneNumber).subscribe(data => {
       if (data) {
@@ -536,8 +540,13 @@ export class SellComponent implements OnInit {
       this.log.logAny(data);
       if (data) {
         this.customer = data;
-        this.changeEmossCheckbox(this.customer.name);
+        
       }
+      else{
+        this.customer.phoneNumber='';
+        this.customer.traiDungThuoc='';
+      }
+      this.changeEmossCheckbox(this.customer.name);
     });
     this.customerControllerService.getListBougthByPhoneUsingGet(NAME + this.customer.name).subscribe(data => {
       if (data) {
