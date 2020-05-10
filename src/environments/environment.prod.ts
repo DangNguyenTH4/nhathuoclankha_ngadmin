@@ -5,6 +5,8 @@
  */
 export const environment = {
   production: true,
-  host:'http://'+window.location.hostname+':6868'
+  host:window.location.protocol+'://'+'dangthienthan.me'+':6868',
   //nhathuoclankha.com:6868'
+
+  // host:'http://167.71.214.246:80'
 };
