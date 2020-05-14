@@ -49,7 +49,7 @@ import { SellComponent } from './sell/sell.component';
       DialogNamePromptComponent, InvoiceComponent, SellComponent
   ],
   entryComponents:[
-    SellComponent
+    SellComponent,DialogNamePromptComponent
   ],
   providers:[  
   //   {
