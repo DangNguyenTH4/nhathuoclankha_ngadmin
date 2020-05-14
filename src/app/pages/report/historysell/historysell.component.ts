@@ -1,9 +1,11 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { GenerateFileName } from '../../../common/genfilename';
 import { DateUtils } from '../../../common/utils/DateUtils';
-import { SellOrderDto } from '../../../../typescript-angular-client';
+import { SellOrderDto, SellMedicineControllerService } from '../../../../typescript-angular-client';
 import { AdminControllerService } from '../../../../typescript-angular-client/api/adminController.service';
 import { Logger } from '../../../log.service';
+import { InvoiceRow, InvoiceCommonComponent } from '../../sharedmodule/invoice-common/invoice-common.component';
+import { NbDialogService } from '@nebular/theme';
 const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
 
 @Component({
@@ -15,7 +17,9 @@ const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
 })
 export class HistorysellComponent implements OnInit {
   public formatOptions: any = Intl.NumberFormat('vi-vn', { style: 'currency', currency: 'Vnd', currencyDisplay: 'name' });
-  constructor(private adminControllerService: AdminControllerService
+  constructor(private adminControllerService: AdminControllerService,
+    private sellMedicineControllerService:SellMedicineControllerService,
+    private dialogService:NbDialogService
     , private log: Logger
   ) {
     this.adminControllerService.reportHistorySellGET(DateUtils.toStartOfDate(this.fromDate).toISOString(), DateUtils.toEndOfDate(this.toDate).toISOString()).subscribe(data => {
@@ -55,6 +59,26 @@ export class HistorysellComponent implements OnInit {
     }
     let historySample :HistoryDto = {customerName:'Tổng cộng: ',total:sum*1000};
     this.products.push(historySample);
+  }
+  cellClickEvent(event) {
+
+    console.log(event);
+
+    //TODO Then : each row click -> query to server. (Lazy load)
+    this.sellMedicineControllerService.reportMyHistorySellByIdGET(event.dataItem.id).subscribe(bdata => {
+      console.log(bdata);
+      // this.source.load(bdata[0].listMedicines);
+
+      let dataNew: InvoiceRow[] = [];
+      for (let dto of bdata.listInvoice) {
+        dataNew.push(new InvoiceRow(dto.productName, dto.unitPrice, dto.addMore, dto.amount, dto.unit));
+      }
+      this.dialogService.open(InvoiceCommonComponent,
+        {
+          context: { data: dataNew,sellDate:event.dataItem.sellDate, customer: { name: event.dataItem.customerName,traiDungThuoc:bdata.customer.traiDungThuoc } },
+          hasBackdrop: true,
+        });
+    });
   }
 }
 export interface HistoryDto {

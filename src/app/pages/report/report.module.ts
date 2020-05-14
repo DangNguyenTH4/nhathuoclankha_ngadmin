@@ -37,6 +37,7 @@ import { MySellHistoryComponent } from './my-sell-history/my-sell-history.compon
 import { IntlModule } from '@progress/kendo-angular-intl';
 import { PDFExportModule } from '@progress/kendo-angular-pdf-export';
 import { SellMedicineControllerService } from '../../../typescript-angular-client';
+import { DetailSellComponent } from './detail-sell/detail-sell.component';
 
 const components = [
   ChartjsBarComponent,
@@ -82,7 +83,7 @@ const components = [
     
     
   ],
-  declarations: [...routedComponents, ...components, NormalReportComponent, HistoryimportComponent, HistorysellComponent, MySellHistoryComponent,
+  declarations: [...routedComponents, ...components, NormalReportComponent, HistoryimportComponent, HistorysellComponent, MySellHistoryComponent, DetailSellComponent,
   ],
   entryComponents:[],
   providers:[SellMedicineControllerService]

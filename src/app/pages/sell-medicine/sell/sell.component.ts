@@ -223,7 +223,14 @@ export class SellComponent implements OnInit {
           }, error => {
             this.resultCreate = false;
             this.log.log(error.error);
-            this.toastService.notify(4, "Không thành công!", error.error);
+            if(error.error){
+              // this.toastService.notify(4, "Không thành công!", error.error);
+            }else{
+              this.log.log("Không co sthoong tin error.error");
+              this.log.log(error);
+              // this.toastService.notify(4, "Không thành công!", error);
+            }
+            
             this.log.log('Tạo không thành công -- Set result create = false');
 
           }
@@ -513,8 +520,8 @@ export class SellComponent implements OnInit {
       this.log.logAny(data);
       if (data) {
         this.customer = data;
-        this.changeEmossCheckbox(this.customer.name);
       }
+      this.changeEmossCheckbox(this.customer.name);
     });
     this.customerControllerService.getListBougthByPhoneUsingGet(PHONE + this.customer.phoneNumber).subscribe(data => {
       if (data) {
@@ -536,8 +543,9 @@ export class SellComponent implements OnInit {
       this.log.logAny(data);
       if (data) {
         this.customer = data;
-        this.changeEmossCheckbox(this.customer.name);
+        
       }
+      this.changeEmossCheckbox(this.customer.name);
     });
     this.customerControllerService.getListBougthByPhoneUsingGet(NAME + this.customer.name).subscribe(data => {
       if (data) {

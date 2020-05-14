@@ -1,4 +1,7 @@
-<kendo-grid [kendoGridBinding]="products" [pageable]="true" [pageSize]="100">
+<kendo-grid 
+[data]="view | async"
+(cellClick)="cellClickEvent($event)"
+[kendoGridBinding]="products" [pageable]="true" [pageSize]="100">
   <ng-template kendoGridToolbarTemplate>
     <div class="row">
       <div class="col-md-4">
@@ -27,14 +30,6 @@
   </kendo-grid-column>
   <kendo-grid-column field="total"   [format]="formatOptions" title="Tổng tiền">
   </kendo-grid-column>
-
-  <!-- <kendo-grid-column field="UnitsInStock" title="In stock" width="80">
-  </kendo-grid-column>
-  <kendo-grid-column field="Discontinued" title="Discontinued" width="120">
-      <ng-template kendoGridCellTemplate let-dataItem>
-          <input type="checkbox" [checked]="dataItem.Discontinued"/>
-      </ng-template>
-  </kendo-grid-column> -->
   <kendo-grid-pdf fileName="{{genFileReport()}}" [allPages]="true" paperSize="A4" [repeatHeaders]="true"
     [landscape]="true">
     <kendo-grid-pdf-margin top="2cm" right="1cm" left="1cm" bottom="2cm"></kendo-grid-pdf-margin>

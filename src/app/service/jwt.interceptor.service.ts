@@ -36,6 +36,7 @@ export class JwtInterceptorService implements HttpInterceptor {
           switch (error.status) {
             case 400:
               console.log(400);
+              this.toast.notify(4,"Lỗi",error.error);
               return Observable.throw(error);
             case 401:
               console.log(401);
@@ -48,6 +49,7 @@ export class JwtInterceptorService implements HttpInterceptor {
               return Observable.throw(error);
             case 500:
               this.toast.notify(4,"Lỗi",error.error.message);
+              return Observable.throw(error);
           }
         }else{
 

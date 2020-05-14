@@ -10,6 +10,8 @@
 
 export const environment = {
   production: false,
-  host:'http://'+window.location.hostname+':6868',
-  hostNoHttp : window.location.hostname+':6868'
+  // host:'http://'+window.location.hostname+':6868',
+  // hostNoHttp : window.location.hostname+':6868',
+  host:'https://'+'dangthienthan.me',
+  // host:'http://167.71.214.246:80'
 };

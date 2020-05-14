@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { MENU_ITEMS_ALL,MENU_ITEMS_STAFF } from './pages-menu';
+import { MENU_ITEMS_ALL,MENU_ITEMS_STAFF, MENU_ITEMS_ACCOUNTANT } from './pages-menu';
 import { TokenStorageService } from '../service/tokenstorage.service';
 
 @Component({
@@ -24,7 +24,10 @@ export class PagesComponent implements OnInit {
     if(role==='ROLE_ADMIN'){
       
       this.menu=MENU_ITEMS_ALL;
-    }else{
+    }else if (role === 'ROLE_ACCOUNTANT'){
+      this.menu = MENU_ITEMS_ACCOUNTANT;
+    }
+    else{
       this.menu=MENU_ITEMS_STAFF;
     }
   }

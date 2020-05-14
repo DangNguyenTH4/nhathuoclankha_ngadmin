@@ -1,63 +1,65 @@
-<div>
-	<p style="text-align: center;font-size: 13px;margin-bottom: 5px;">
-	<b>ĐẠI LÝ THUỐC THÚ Y LAN KHA</b>
-	</p>
-	<p style="text-align: center;font-size: 12px;margin-bottom: 5px;">
-		Chuyên: <b>Bán buôn - Bán lẻ thuốc thú y và vaccine các loại</b>
-		<br>
-		Địa chỉ: TDP4 - Tân Sơn - Lương Sơn - Thành Phố Sông Công
-		<br>
-		ĐT+Zalo: KSCN Kha: <b>0399397831</b> - BSTY Lan: <b>0974525835 </b>
-		
-	</p>
-	<p style="text-align: center;margin-bottom: 5px;"><b>HÓA ĐƠN THANH TOÁN</b></p>
-	
-</div>
+<div style="background-color: whitesmoke;">
+	<div>
+		<p style="text-align: center;font-size: 13px;margin-bottom: 5px;">
+			<b>ĐẠI LÝ THUỐC THÚ Y LAN KHA</b>
+		</p>
+		<p style="text-align: center;font-size: 12px;margin-bottom: 5px;">
+			Chuyên: <b>Bán buôn - Bán lẻ thuốc thú y và vaccine các loại</b>
+			<br>
+			Địa chỉ: TDP4 - Tân Sơn - Lương Sơn - Thành Phố Sông Công
+			<br>
+			ĐT+Zalo: KSCN Kha: <b>0399397831</b> - BSTY Lan: <b>0974525835 </b>
 
-<div class="for">
-	Tên khách hàng: {{customer.name}}
-	<br>
-	Tên chủ trại  : {{customer.traiDungThuoc}}
-	<br>
-</div>
+		</p>
+		<p style="text-align: center;margin-bottom: 5px;"><b>HÓA ĐƠN THANH TOÁN</b></p>
 
-<div class="items">
-	<kendo-grid [data]="data" scrollable="none">
-		<kendo-grid-column [style]="{'border-bottom':'1px solid black'}" field="productName" title="Mã sản phẩm"
-			width="30%">
-			<ng-template kendoGridFooterTemplate>
-				Tổng cộng:
-			</ng-template>
-		</kendo-grid-column>
-		<kendo-grid-column [style]="{'border-bottom':'1px solid black'}" 	 field="formatNumber" title="Đơn giá(vnđ)"
-			width="30%" >
-		</kendo-grid-column>
-		<kendo-grid-column [style]="{'border-bottom':'1px solid black'}" field="amountColumn" title="Số lượng"
-			width="10%"  >
-			<!-- <ng-template kendoGridFooterTemplate let-column="column">
+	</div>
+
+	<div class="for">
+		Tên khách hàng: {{customer.name}}
+		<br>
+		Tên chủ trại : {{customer.traiDungThuoc}}
+		<br>
+	</div>
+
+	<div class="items">
+		<kendo-grid [data]="data" scrollable="none">
+			<kendo-grid-column [style]="{'border-bottom':'1px solid black'}" field="productName" title="Mã sản phẩm"
+				width="30%">
+				<ng-template kendoGridFooterTemplate>
+					Tổng cộng:
+				</ng-template>
+			</kendo-grid-column>
+			<kendo-grid-column [style]="{'border-bottom':'1px solid black'}" field="formatNumber" title="Đơn giá(vnđ)"
+				width="30%">
+			</kendo-grid-column>
+			<kendo-grid-column [style]="{'border-bottom':'1px solid black'}" field="amountColumn" title="Số lượng"
+				width="10%">
+				<!-- <ng-template kendoGridFooterTemplate let-column="column">
 				{{ getComputeTotalAmount }}
 			</ng-template> -->
-		</kendo-grid-column>
+			</kendo-grid-column>
 
-		<kendo-grid-column [style]="{'border-bottom':'1px solid black'}" field="formatTotalNumber" title="Thành tiền(vnđ)"
-			width="30%" >
-			<ng-template kendoGridFooterTemplate let-column="column">
-				<!-- {{ totals[column.field].sum}} -->
-				{{computeTotal}}
-			</ng-template>
-		</kendo-grid-column>
-	</kendo-grid>
-</div>
-<div class="address">
-	<div class="from" style="text-align: right;" >
-		<br>
-		{{fillDate}}
-		<br>
-		<div style="text-align: center;" class="row">
-			<div  class="col">
-				Chữ kí khách
+			<kendo-grid-column [style]="{'border-bottom':'1px solid black'}" field="formatTotalNumber"
+				title="Thành tiền(vnđ)" width="30%">
+				<ng-template kendoGridFooterTemplate let-column="column">
+					<!-- {{ totals[column.field].sum}} -->
+					{{computeTotal}}
+				</ng-template>
+			</kendo-grid-column>
+		</kendo-grid>
+	</div>
+	<div class="address">
+		<div class="from" style="text-align: right;">
+			<br>
+			{{fillDate}}
+			<br>
+			<div style="text-align: center;" class="row">
+				<div class="col">
+					Chữ kí khách
+				</div>
+				<div class="col">Chủ cửa hàng</div>
 			</div>
-			<div class="col">Chủ cửa hàng</div>
 		</div>
 	</div>
 </div>

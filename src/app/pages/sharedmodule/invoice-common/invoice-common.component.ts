@@ -15,58 +15,71 @@ export class InvoiceCommonComponent implements OnInit {
   ngOnInit(): void {
   }
   @Input()
-  autoCheckDate:boolean=true;
+  autoCheckDate: boolean = true;
   @Input()
-  customer : CustomerDto={name:'Không tên'};
-  @Input() 
-  isEmoss:boolean=true;
+  customer: CustomerDto = { name: 'Không tên' };
   @Input()
-  dungThuoc:string='dung thuoc';
+  isEmoss: boolean = true;
+  @Input()
+  dungThuoc: string = 'dung thuoc';
   @Input()
   public data: InvoiceRow[] = [];
+  /**
+   * dd/MM/yyyy
+   */
+  @Input()
+  sellDate: String;
 
   private aggregates: any[] = [{
     field: 'qty', aggregate: 'sum'
   }, {
     field: 'total', aggregate: 'sum'
   }];
-  public get fillDate():string{
-    let homnay:string = 'Ngày';
-    
-    let date = new Date();
-
-    let ngay = 'Ngày '+ date.getDate();
-    let thang= ' ,Tháng '+(date.getMonth()+1);
-    let nam = ' ,Năm '+date.getFullYear();
-    homnay=ngay+thang+nam ;
+  public get fillDate(): string {
+    let homnay: string = 'Ngày';
+    let ngay = 'Ngày ';
+    let thang = ' ,Tháng ';
+    let nam = ' ,Năm ';
+    if (this.sellDate) {
+      let date = this.sellDate.split('/');
+      ngay += date[0];
+      thang += date[1];
+      nam += date[2];
+    } else {
+      let date = new Date();
+      ngay += date.getDate();
+      thang += (date.getMonth() + 1);
+      nam += date.getFullYear();
+    }
+    homnay = ngay + thang + nam;
     return homnay;
   }
   public get totals(): any {
     return aggregateBy(this.data, this.aggregates) || {};
   }
-  public get computeTotal(){
+  public get computeTotal() {
     let a = 0;
-    this.data.forEach(e=>{
-      a=a+e.qty*(e.unitPrice+e.addMore);
+    this.data.forEach(e => {
+      a = a + e.qty * (e.unitPrice + e.addMore);
     });
-    return a.toLocaleString('vi-vn');
+    return (a*1000).toLocaleString('vi-vn');
   }
-  public get getUnitPrice(){
-    return 
+  public get getUnitPrice() {
+    return
   }
 
 }
 export class InvoiceRow {
-  public get formatNumber(){
-    let a = (this.unitPrice+ this.addMore).toLocaleString('vi-vn');
+  public get formatNumber() {
+    let a = ((this.unitPrice + this.addMore)*1000).toLocaleString('vi-vn');
     return a;
   }
-  public get formatTotalNumber(){
-    let a = (this.unitPrice+this.addMore)*this.qty;
-    return a.toLocaleString('vi-vn');
+  public get formatTotalNumber() {
+    let a = (this.unitPrice + this.addMore) * this.qty;
+    return (a*1000).toLocaleString('vi-vn');
   }
   public get total(): number {
-    return (this.unitPrice+this.addMore) * this.qty;
+    return ((this.unitPrice + this.addMore) * this.qty)*1000;
   }
   public get amountColumn(): string {
     let result = '';
@@ -77,7 +90,7 @@ export class InvoiceRow {
   constructor(
     public productName: string,
     public unitPrice: number,
-    public addMore:number,
+    public addMore: number,
     public qty: number,
     public unit: string,
   ) { }
