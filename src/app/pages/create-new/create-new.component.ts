@@ -41,6 +41,13 @@ export class CreateNewComponent implements OnInit {
     this.log.log(medicine);
     this.log.logAny(this.rfContact);
     // this.rfContact.reset();
+ 
+    medicine.price.boughtPrice="1";
+    medicine.boughtPrice="1";
+    medicine.price.sellForCompanyPrice="2";
+    medicine.price.sellForFarmPrice="2";
+    medicine.price.sellForPersonalPrice="2";
+
     this.log.log(medicine);
     this.log.log("Create ...");
     this.medicineControllerService.createNewOneUsingPOST(medicine).subscribe(
