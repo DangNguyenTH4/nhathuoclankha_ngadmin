@@ -1,14 +1,10 @@
-import { Component, OnInit, TemplateRef, ViewChild, ElementRef } from '@angular/core';
-import { LocalDataSource } from 'ng2-smart-table';
-import { SmartTableData } from '../../../@core/data/smart-table';
+import { Component, OnInit, TemplateRef} from '@angular/core';
+import { LocalDataSource, Cell } from 'ng2-smart-table';
 import { SellMedicineControllerService, MedicineControllerService, MedicineDto, SellOrderDto, CustomerDto, CustomerControllerService } from '../../../../typescript-angular-client';
 import { NbDialogService } from '@nebular/theme';
 import { DialogNamePromptComponent } from './../dialog/dialog-name-prompt/dialog-name-prompt.component';
 import { ToastrService } from '../../sharedmodule/toast';
-import * as jsPDF from 'jspdf';
 import { InvoiceRow, InvoiceComponent } from './../invoice/invoice.component';
-import { color } from 'd3-color';
-import { isEmpty } from 'rxjs/operators';
 import { Logger } from '../../../log.service';
 import { GenerateFileName } from '../../../common/genfilename';
 import { AuthService } from '../../../service/auth-service.service';
@@ -95,16 +91,34 @@ export class SellComponent implements OnInit {
         confirmDelete: true,
       },
       columns: {
+        stt: {
+          title: 'Stt',
+          type: 'number',
+          editable: false,
+          addable: false,
+          filter: false,
+          sort:'desc'
+        },
         medicineCode: {
-          title: 'Mã sản phẩm',
-          type: 'string',
+          class: 'dangntClass',
+          title: 'Mã thuốc',
+          type: 'html',
           filter: false,
           editor: {
             type: 'list',
             config: {
               list: this.listMedicineDislay
             }
-          }
+          },
+          valuePrepareFunction:(data,row, cell)=>{
+            return '<span onchange="changeMedicine($event)" class ="dangnt">'+data+'</span>'},
+        },
+        medicineName: {
+          title: 'Tên sản phẩm',
+          type: 'text',
+          editable: false,
+          addable: false,
+          filter: false,
         },
         amount: {
           title: 'Số lượng',
@@ -118,23 +132,25 @@ export class SellComponent implements OnInit {
           addable: false,
           filter: false,
         },
-        medicineName: {
-          title: 'Tên sản phẩm',
-          type: 'text',
-          editable: false,
-          addable: false,
-          filter: false,
-        },
+        
         medicinePrice: {
-          title: "Đơn giá",
+          title: "Đơn giá hiện tại",
           type: 'number',
           editable: false,
           addable: false,
           filter: false,
           valuePrepareFunction: (value) => { return AppUtils.appendVND(value); }
         },
-        addMore: {
-          title: 'Tính phí',
+        // addMore: {
+        //   title: 'Tính phí',
+        //   type: 'number',
+        //   filter: false,
+        //   defaultValue: 0,
+        //   show:false, 
+        //   valuePrepareFunction: (value) => { return AppUtils.appendVND(value); }
+        // },
+        realSellPrice: {
+          title: 'Giá bán', 
           type: 'number',
           filter: false,
           defaultValue: 0,
@@ -165,8 +181,8 @@ export class SellComponent implements OnInit {
         } else {
           e.medicinePrice = medicine.priceForPersonal;
         }
-        e.addMore = medicine.addMore;
-        e.total = this.calculateTotalWithAddmore(e.addMore, e.medicinePrice, e.amount);
+        e.realSellPrice = medicine.realSellPrice;
+        e.total = this.calculateTotalWithAddmore(e.realSellPrice, e.medicinePrice, e.amount);
 
       });
       this.source.load(data);
@@ -201,7 +217,8 @@ export class SellComponent implements OnInit {
             priceForFarm: e.medicinePrice,
             priceForPersonal: e.medicinePrice,
             total: e.total,
-            addMore: e.addMore,
+            // Neu khong nhap gia ban moi thi mac dinh gia ban moi bang giaban cu
+            realSellPrice: AppUtils.isEmptyOrZero(e.realSellPrice) ? e.medicinePrice : e.realSellPrice,
             expiryDate:""
           });
           tempTotal += e.total;
@@ -249,6 +266,14 @@ export class SellComponent implements OnInit {
   }
   onDeleteConfirm(event): void {
     this.deleteMedicineItem(event).then(data => {
+      //  console.log(event.data);
+       console.log(event);
+       this.source.getAll().then(data=>{
+         for(let i = event.data.stt - 1 ; i <data.length;i++){
+          data[i].stt -= 1;
+         }
+       });
+       this.source.refresh();
       this.loadDataForInvoice();
     });
   }
@@ -292,30 +317,39 @@ export class SellComponent implements OnInit {
     } else {
       newData.medicinePrice = medicine.priceForPersonal;
     }
-    //when create new and no edit addmore update old addmore
-    if (isCreateNew && this.isEmpty(newData.addMore)) {
-      newData.addMore = medicine.addMore;
+    //when create new and no edit realSellPrice update old realSellPrice
+    if (isCreateNew && AppUtils.isEmpty(newData.realSellPrice)) {
+      newData.realSellPrice = medicine.realSellPrice;
+    }
+
+    // Update Stt increase 1
+    if(isCreateNew){
+      newData.stt = 1;
+      this.source.getAll().then(data=>{ 
+        console.log(data);
+        data.forEach(element => {
+          element.stt = element.stt + 1;
+        });
+        
+      });
     }
 
     //calculate total:
-    newData.total = this.calculateTotalWithAddmore(newData.addMore, newData.medicinePrice, newData.amount);
+    newData.total = this.calculateTotalWithAddmore(newData.realSellPrice, newData.medicinePrice, newData.amount);
     newData.medicineUnit = medicine.unit;
     return newData;
   }
-  private isEmpty(something: any): boolean {
-    return something === null || something === '';
-  }
-  private calculateTotalWithAddmore(addMore, medicinePrice, amount): string {
+  
+  private calculateTotalWithAddmore(realSellPrice, medicinePrice, amount): string {
     this.log.log("Calculate total processing...");
     let total = '';
-    if (addMore != null && addMore !== '') {
-      this.log.log('new add more have: ' + addMore);
+    if (!AppUtils.isEmptyOrZero(realSellPrice)) {
+      this.log.log('new Sell Price: ' + realSellPrice);
       // this.log.log(newData.medicinePrice);
-      this.log.log(medicinePrice + parseInt(addMore));
-      total = ((parseInt(medicinePrice) + parseInt(addMore)) * amount).toString();
+      total = (parseInt(realSellPrice) * amount).toString();
     }
     else {
-      this.log.log('non add more have: ' + addMore);
+      this.log.log('Sell with normal price: ');
       total = ((parseInt(medicinePrice)) * amount).toString();
     }
     return total;
@@ -395,14 +429,13 @@ export class SellComponent implements OnInit {
       if (elements && elements.length !== 0) {
         elements.forEach(element => {
           let name: string = element.medicineName;
-          let price: number = (element.medicinePrice)* 1000;
+          let price: number = AppUtils.isEmpty(element.realSellPrice) ? (element.medicinePrice) * 1000 : element.realSellPrice * 1000;
           let amount: number = element.amount;
           let unit: string = element.medicineUnit;
-          let addMore: number = element.addMore * 1000;
-          temp.push(new InvoiceRow(name, price, addMore, amount, unit));
+          temp.push(new InvoiceRow(element.stt, name, price, amount, unit));
         });
       } else {
-        temp.push(new InvoiceRow("", 0, 0, 0, ""));
+        temp = initInvoiceData;
       }
     });
     this.dataInvoiceRow = temp;
@@ -412,6 +445,7 @@ export class SellComponent implements OnInit {
     this.customer = {};
     this.source.load([]);
     this.resultCreate = false;
+    this.dataInvoiceRow= initInvoiceData;
   }
 
   confirmCreateSetting = {
@@ -498,7 +532,7 @@ export class SellComponent implements OnInit {
     this.paperSize = even;
     this.log.log(even);
   }
-  public dataInvoiceRow: InvoiceRow[] = invoiceData;
+  public dataInvoiceRow: InvoiceRow[] = initInvoiceData;
   paperSize = 'A5';
   listPhone: string[] = [];
   listName: string[] = [];
@@ -580,22 +614,13 @@ export class SellComponent implements OnInit {
     }
     this.isEmoss = false;
   }
-
-  // seeInvoice() {
-  //   this.sellMedicineControllerService.reportMyHistorySellGET(this.authService.getUserName()).subscribe(bdata=>{
-  //     console.log(bdata);
-  //     // this.source.load(bdata[0].listMedicines);
-  //     this.dialogService.open(InvoiceComponent,
-  //       {
-  //         context: {data:this.dataInvoiceRow,autoCheckDate:this.autoCheckDate,isEmoss:this.isEmoss,customer:this.customer},
-  //         hasBackdrop: false, 
-  //       });
-  //   });
-  // }
-
-
+  changeMedicine(event){
+    console.log(event);
+    console.log(">>>>> onchange cell");
+  }
 }
-export const invoiceData = [
-  new InvoiceRow("", 0, 0, 0, ""),
+
+export const initInvoiceData = [
+  new InvoiceRow(1, "", 0, 0, ""),
 ];
 

@@ -213,7 +213,7 @@ export class ImportMedicineComponent implements OnInit {
             priceForFarm: e.priceForFarm,
             priceForPersonal: e.priceForPersonal,
             total: e.total,
-            addMore:0,
+            realSellPrice:0,
             expiryDate:e.expiryDate
           });
         });

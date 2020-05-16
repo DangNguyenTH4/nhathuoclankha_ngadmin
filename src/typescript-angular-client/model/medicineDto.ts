@@ -19,10 +19,11 @@ export interface MedicineDto {
     boughtPrice:number;
     expiryDate:string;
 
+    realSellPrice:number;
+
     priceForCompany: number;
     priceForFarm: number;
     priceForPersonal: number;
     total: number;
     amount: number;
-    addMore:number;
 }
