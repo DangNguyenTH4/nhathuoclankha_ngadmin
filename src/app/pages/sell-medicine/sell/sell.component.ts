@@ -13,6 +13,7 @@ import { Logger } from '../../../log.service';
 import { GenerateFileName } from '../../../common/genfilename';
 import { AuthService } from '../../../service/auth-service.service';
 import { TablesModule } from '../../tables/tables.module';
+import { AppUtils } from '../../../common/utils/AppUtils';
 const EMOSSCOMPANY = "Công ty Cổ Phần Nông Trại E.MOSS";
 const PHONE = "PHONE";
 const NAME = "NAME_";
@@ -130,14 +131,14 @@ export class SellComponent implements OnInit {
           editable: false,
           addable: false,
           filter: false,
-          valuePrepareFunction: (value) => { return value === 'Total' ? value : Intl.NumberFormat('vi-vn', { style: 'currency', currency: 'Vnd' }).format(value * 1000) }
+          valuePrepareFunction: (value) => { return AppUtils.appendVND(value); }
         },
         addMore: {
           title: 'Tính phí',
           type: 'number',
           filter: false,
           defaultValue: 0,
-          valuePrepareFunction: (value) => { return value === 'Total' ? value : Intl.NumberFormat('vi-vn', { style: 'currency', currency: 'Vnd' }).format(value * 1000) }
+          valuePrepareFunction: (value) => { return AppUtils.appendVND(value); }
         },
         total: {
           title: 'Thành tiền',
@@ -145,7 +146,7 @@ export class SellComponent implements OnInit {
           editable: false,
           addable: false,
           filter: false,
-          valuePrepareFunction: (value) => { return value === 'Total' ? value : Intl.NumberFormat('vi-vn', { style: 'currency', currency: 'Vnd' }).format(value * 1000) }
+          valuePrepareFunction: (value) => { return AppUtils.appendVND(value); }
         },
 
       },
@@ -195,11 +196,13 @@ export class SellComponent implements OnInit {
             code: e.medicineCode,
             name: e.medicineName,
             unit: e.medicineUnit,
+            boughtPrice:null,
             priceForCompany: e.medicinePrice,
             priceForFarm: e.medicinePrice,
             priceForPersonal: e.medicinePrice,
             total: e.total,
-            addMore: e.addMore
+            addMore: e.addMore,
+            expiryDate:""
           });
           tempTotal += e.total;
         });
@@ -472,7 +475,7 @@ export class SellComponent implements OnInit {
         editable: false,
         addable: false,
         filter: false,
-        valuePrepareFunction: (value) => { return value === 'Total' ? value : Intl.NumberFormat('vi-vn', { style: 'currency', currency: 'Vnd' }).format(value * 1000) }
+        valuePrepareFunction: (value) => { return AppUtils.appendVND(value); }
       },
 
     },

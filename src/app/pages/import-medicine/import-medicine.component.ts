@@ -8,6 +8,7 @@ import { NbDialogService } from '@nebular/theme';
 import { ImportOrderDto } from '../../../typescript-angular-client/model/importOrderDto';
 import { ToastrService } from '../sharedmodule/toast';
 import { Logger } from '../../log.service';
+import { AppUtils } from '../../common/utils/AppUtils';
 
 @Component({
   selector: 'ngx-import-medicine',
@@ -31,6 +32,7 @@ export class ImportMedicineComponent implements OnInit {
     private toastService:ToastrService,
   ) {
     this.prePareListMedicineDisplay();
+    // this.source.setSort(this.source.getAll().then(data-)
   }
   private prePareListMedicineDisplay() {
     this.medicineControllerService.getListAllMedicine().subscribe(data => {
@@ -77,6 +79,14 @@ export class ImportMedicineComponent implements OnInit {
         confirmDelete: true,
       },
       columns: {
+        stt :{
+          title: 'STT',
+          type: 'number',
+          editable: false,
+          addable: false,
+          filter: false,
+          sorter : true
+        },
         medicineCode: {
           title: 'Mã thuốc',
           type: 'string',
@@ -99,6 +109,43 @@ export class ImportMedicineComponent implements OnInit {
           editable: false,
           addable: false,
           filter: false,
+        },
+        boughtPrice: {
+          title: 'Giá nhập',
+          type: 'text',
+          filter: false,
+          valuePrepareFunction: (value) => { return AppUtils.appendVND(value); }
+        },
+        total: {
+          title: 'Tổng tiền nhập',
+          type: 'text',
+          editable: false,
+          addable: false,
+          filter: false,
+          valuePrepareFunction: (value) => { return AppUtils.appendVND(value); }
+        },
+        expiryDate: {
+          title: 'Hạn sử dụng',
+          type: 'text',
+          filter: false,
+        },
+        priceForCompany: {
+          title: 'Giá bán cho công ty',
+          type: 'text',
+          filter: false,
+          valuePrepareFunction: (value) => { return AppUtils.appendVND(value); }
+        },
+        priceForFarm: {
+          title: 'Giá bán cho nông trại',
+          type: 'text',
+          filter: false,
+          valuePrepareFunction: (value) => { return AppUtils.appendVND(value); }
+        },
+        priceForPersonal: {
+          title: 'Giá bán lẻ',
+          type: 'text',
+          filter: false,
+          valuePrepareFunction: (value) => { return AppUtils.appendVND(value); }
         },
         medicineName: {
           title: 'Tên thuốc',
@@ -161,11 +208,13 @@ export class ImportMedicineComponent implements OnInit {
             code: e.medicineCode,
             name: e.medicineName,
             unit: e.medicineUnit,
-            priceForCompany: null,
-            priceForFarm: null,
-            priceForPersonal: null,
-            total: null,
-            addMore:0
+            boughtPrice:e.boughtPrice,
+            priceForCompany: e.priceForCompany,
+            priceForFarm: e.priceForFarm,
+            priceForPersonal: e.priceForPersonal,
+            total: e.total,
+            addMore:0,
+            expiryDate:e.expiryDate
           });
         });
       this.importMedicineControllerService.createImportOrder(importOrderDto).subscribe(
@@ -189,17 +238,22 @@ export class ImportMedicineComponent implements OnInit {
   }
   data: Array<any> = [{}];
   onCreateConfirm(event) {
-    this.editOrCreateNewMedicine(event);
+    console.log(event);
+    
+   
+    console.log(event);
+    this.editOrCreateNewMedicine(event, true);
   }
   onEditConfirm(event) {
-    this.editOrCreateNewMedicine(event);
+    this.editOrCreateNewMedicine(event, false);
 
   }
-  editOrCreateNewMedicine(event) {
+  editOrCreateNewMedicine(event, isCreateNew:boolean) {
     let validateMessage = this.validateRow(event.newData);
     if (validateMessage === "ok") {
-      event.newData = this.updateInfoRow(event.newData);
+      event.newData = this.updateInfoRow(event.newData, isCreateNew);
       event.confirm.resolve(event.newData);
+      
     } else {
       event.confirm.reject();
       this.notify(validateMessage);
@@ -208,19 +262,14 @@ export class ImportMedicineComponent implements OnInit {
   }
 
   customer: CustomerDto = { id: null, name: '', phoneNumber: '', type: 'other' };
-  private updateInfoRow(newData: any) {
+  private updateInfoRow(newData: any, isCreateNew: boolean) {
     let medicine = this.listMedicines.find(e => e.code == newData.medicineCode);
     newData.medicineName = medicine.name;
-    if (this.customer.type === 'company') {
-      newData.medicinePrice = medicine.priceForCompany;
-    } else if (this.customer.type === 'farm') {
-      newData.medicinePrice = medicine.priceForFarm;
-    } else {
-      newData.medicinePrice = medicine.priceForPersonal;
-    }
     newData.medicineUnit = medicine.unit;
-    newData.total = (newData.medicinePrice * newData.amount).toString();
-
+    newData.total = (newData.boughtPrice * newData.amount).toString();
+    if(isCreateNew){
+      this.source.getAll().then(data =>{newData.stt = data.length + 1;});
+    }
     return newData;
 
   }
@@ -262,70 +311,70 @@ export class ImportMedicineComponent implements OnInit {
     this.source.load([]);
   }
 
-  confirmCreateSetting = {
-    hideSubHeader: true,
-    hideHeader: true,
-    add: {
-      addButtonContent: '',
-      createButtonContent: '',
-      cancelButtonContent: '',
-      confirmCreate: false,
-    },
-    edit: {
-      editButtonContent: '',
-      saveButtonContent: '',
-      cancelButtonContent: '',
-      confirmSave: false,
-    },
-    delete: {
+  // confirmCreateSetting = {
+  //   hideSubHeader: true,
+  //   hideHeader: true,
+  //   add: {
+  //     addButtonContent: '',
+  //     createButtonContent: '',
+  //     cancelButtonContent: '',
+  //     confirmCreate: false,
+  //   },
+  //   edit: {
+  //     editButtonContent: '',
+  //     saveButtonContent: '',
+  //     cancelButtonContent: '',
+  //     confirmSave: false,
+  //   },
+  //   delete: {
 
-      deleteButtonContent: '',
-      confirmDelete: false,
-    },
-    columns: {
-      medicineCode: {
-        title: 'Mã thuốc',
-        editable: false,
-        addable: false,
-        filter: false,
+  //     deleteButtonContent: '',
+  //     confirmDelete: false,
+  //   },
+  //   columns: {
+  //     medicineCode: {
+  //       title: 'Mã thuốc',
+  //       editable: false,
+  //       addable: false,
+  //       filter: false,
 
-      },
-      amount: {
-        title: 'Số lượng',
-        editable: false,
-        addable: false,
-        filter: false,
-      },
-      medicineUnit: {
-        title: 'Đơn vị',
-        type: 'text',
-        editable: false,
-        addable: false,
-        filter: false,
-      },
-      // medicineName: {
-      //   title: 'Tên thuốc',
-      //   type: 'text',
-      //   editable: false,
-      //   addable: false,
-      //   filter: false,
-      // },
-      // medicinePrice: {
-      //   title: "Giá tiền",
-      //   type: 'number',
-      //   editable: false,
-      //   addable: false,
-      //   filter: false,
-      // },
-      total: {
-        title: 'Thành tiền',
-        type: 'text',
-        editable: false,
-        addable: false,
-        filter: false,
-      },
+  //     },
+  //     amount: {
+  //       title: 'Số lượng',
+  //       editable: false,
+  //       addable: false,
+  //       filter: false,
+  //     },
+  //     medicineUnit: {
+  //       title: 'Đơn vị',
+  //       type: 'text',
+  //       editable: false,
+  //       addable: false,
+  //       filter: false,
+  //     },
+  //     // medicineName: {
+  //     //   title: 'Tên thuốc',
+  //     //   type: 'text',
+  //     //   editable: false,
+  //     //   addable: false,
+  //     //   filter: false,
+  //     // },
+  //     // medicinePrice: {
+  //     //   title: "Giá tiền",
+  //     //   type: 'number',
+  //     //   editable: false,
+  //     //   addable: false,
+  //     //   filter: false,
+  //     // },
+  //     total: {
+  //       title: 'Thành tiền',
+  //       type: 'text',
+  //       editable: false,
+  //       addable: false,
+  //       filter: false,
+  //     },
 
-    },
-  };
+  //   },
+  // };
 }
 
