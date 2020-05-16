@@ -87,7 +87,7 @@ export class MySellHistoryComponent implements OnInit {
 
       let dataNew: InvoiceRow[] = [];
       for (let dto of bdata.listInvoice) {
-        dataNew.push(new InvoiceRow(dto.productName, dto.unitPrice, dto.addMore, dto.amount, dto.unit));
+        dataNew.push(new InvoiceRow(1, dto.productName, dto.unitPrice,  dto.amount, dto.unit));
       }
       this.dialogService.open(InvoiceCommonComponent,
         {
@@ -98,7 +98,7 @@ export class MySellHistoryComponent implements OnInit {
   }
 }
 export const invoiceData = [
-  new InvoiceRow("A", 123, 456, 789, "Kg"),
+  new InvoiceRow(1, "A", 123, 789, "Kg"),
 ];
 
 export interface HistoryDto {

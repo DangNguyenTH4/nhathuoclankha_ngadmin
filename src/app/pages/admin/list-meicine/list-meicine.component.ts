@@ -88,14 +88,3 @@ export class ListMeicineComponent implements OnInit {
     // });
   }
 }
-export const invoiceData = [
-  new InvoiceRow("A", 123, 456, 789, "Kg"),
-];
-
-export interface HistoryDto {
-  id?: number;
-  sellDate?: String;
-  customerName?: String;
-  total?: number;
-  staffName?: String;
-}

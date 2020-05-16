@@ -15,10 +15,15 @@ export interface MedicineDto {
     code: string;
     name: string;
     unit: string;
+    //bought price for import order
+    boughtPrice:number;
+    expiryDate:string;
+
+    realSellPrice:number;
+
     priceForCompany: number;
     priceForFarm: number;
     priceForPersonal: number;
     total: number;
     amount: number;
-    addMore:number;
 }

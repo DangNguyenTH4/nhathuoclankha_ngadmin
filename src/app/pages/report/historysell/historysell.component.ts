@@ -71,7 +71,7 @@ export class HistorysellComponent implements OnInit {
 
       let dataNew: InvoiceRow[] = [];
       for (let dto of bdata.listInvoice) {
-        dataNew.push(new InvoiceRow(dto.productName, dto.unitPrice, dto.addMore, dto.amount, dto.unit));
+        dataNew.push(new InvoiceRow(dto.productName, dto.unitPrice, dto.amount, dto.unit));
       }
       this.dialogService.open(InvoiceCommonComponent,
         {

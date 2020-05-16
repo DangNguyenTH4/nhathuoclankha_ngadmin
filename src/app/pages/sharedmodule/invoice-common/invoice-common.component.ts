@@ -60,7 +60,7 @@ export class InvoiceCommonComponent implements OnInit {
   public get computeTotal() {
     let a = 0;
     this.data.forEach(e => {
-      a = a + e.qty * (e.unitPrice + e.addMore);
+      a = a + e.qty * (e.unitPrice);
     });
     return (a*1000).toLocaleString('vi-vn');
   }
@@ -71,15 +71,15 @@ export class InvoiceCommonComponent implements OnInit {
 }
 export class InvoiceRow {
   public get formatNumber() {
-    let a = ((this.unitPrice + this.addMore)*1000).toLocaleString('vi-vn');
+    let a = ((this.unitPrice)*1000).toLocaleString('vi-vn');
     return a;
   }
   public get formatTotalNumber() {
-    let a = (this.unitPrice + this.addMore) * this.qty;
+    let a = (this.unitPrice) * this.qty;
     return (a*1000).toLocaleString('vi-vn');
   }
   public get total(): number {
-    return ((this.unitPrice + this.addMore) * this.qty)*1000;
+    return ((this.unitPrice) * this.qty)*1000;
   }
   public get amountColumn(): string {
     let result = '';
@@ -90,7 +90,6 @@ export class InvoiceRow {
   constructor(
     public productName: string,
     public unitPrice: number,
-    public addMore: number,
     public qty: number,
     public unit: string,
   ) { }

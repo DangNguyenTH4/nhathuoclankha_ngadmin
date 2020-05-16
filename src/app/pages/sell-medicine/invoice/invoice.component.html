@@ -23,7 +23,10 @@
 
 <div class="items">
 	<kendo-grid [data]="data" scrollable="none">
-		<kendo-grid-column [style]="{'border-bottom':'1px solid black'}" field="productName" title="Mã sản phẩm"
+		<kendo-grid-column [style]="{'border-bottom':'1px solid black'}" field="stt" title="Stt"
+			width="15%">
+		</kendo-grid-column>
+		<kendo-grid-column [style]="{'border-bottom':'1px solid black'}" field="productName" title="Mã thuốc"
 			width="30%">
 			<ng-template kendoGridFooterTemplate>
 				Tổng cộng:
