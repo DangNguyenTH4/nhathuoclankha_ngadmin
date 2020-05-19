@@ -203,7 +203,10 @@ export class SellComponent implements OnInit {
   }
   async createOrder(pdf) {
     this.log.log('Create new order....');
-    let sellOrderDto = this.sellOrder;
+    let sellOrderDto = { customer: null, id: null, listMedicines: [], time: null, total: 0, seller: this.authService.getUserName(), note:'',numberOfSell:'',timeInputAnimal:null };
+    sellOrderDto.numberOfSell = this.sellOrder.numberOfSell;
+    sellOrderDto.timeInputAnimal = this.sellOrder.timeInputAnimal;
+    sellOrderDto.note = this.sellOrder.note;
     sellOrderDto.customer = this.customer;
     let tempTotal: number = 0;
     this.log.log('Build body sellDto..');
