@@ -17,4 +17,5 @@ export interface CustomerDto {
     phoneNumber?: string;
     type?: string;
     traiDungThuoc?:string;
+    typeOfCustomer?:string;
 }

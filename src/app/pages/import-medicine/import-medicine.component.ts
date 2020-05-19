@@ -87,6 +87,7 @@ export class ImportMedicineComponent implements OnInit {
           filter: false,
           sorter : true
         },
+        
         medicineCode: {
           title: 'Mã thuốc',
           type: 'string',
@@ -97,6 +98,19 @@ export class ImportMedicineComponent implements OnInit {
               list: this.listMedicineDislay
             }
           }
+        },
+        medicineName: {
+          title: 'Tên thuốc',
+          type: 'text',
+          editable: false,
+          addable: false,
+          filter: false,
+        },
+        expiryDate: {
+          title: 'Hạn sử dụng',
+          type: 'text',
+          placeholder:'dd/MM/yyyy',
+          filter: false,
         },
         amount: {
           title: 'Số lượng',
@@ -116,6 +130,20 @@ export class ImportMedicineComponent implements OnInit {
           filter: false,
           valuePrepareFunction: (value) => { return AppUtils.appendVND(value); }
         },
+        discount: {
+          title: 'Chiết khấu',
+          type: 'text',
+          filter: false,
+          valuePrepareFunction: (value) => { return AppUtils.appendPercent(value); }
+        },
+        boughtPriceAfterDiscount: {
+          title: 'Giá sau chiết khấu',
+          type: 'text',
+          editable: false,
+          addable: false,
+          filter: false,
+          valuePrepareFunction: (value) => { return AppUtils.appendVND(value); }
+        },
         total: {
           title: 'Tổng tiền nhập',
           type: 'text',
@@ -124,36 +152,26 @@ export class ImportMedicineComponent implements OnInit {
           filter: false,
           valuePrepareFunction: (value) => { return AppUtils.appendVND(value); }
         },
-        expiryDate: {
-          title: 'Hạn sử dụng',
-          type: 'text',
-          filter: false,
-        },
-        priceForCompany: {
-          title: 'Giá bán cho công ty',
-          type: 'text',
-          filter: false,
-          valuePrepareFunction: (value) => { return AppUtils.appendVND(value); }
-        },
-        priceForFarm: {
-          title: 'Giá bán cho nông trại',
-          type: 'text',
-          filter: false,
-          valuePrepareFunction: (value) => { return AppUtils.appendVND(value); }
-        },
-        priceForPersonal: {
-          title: 'Giá bán lẻ',
-          type: 'text',
-          filter: false,
-          valuePrepareFunction: (value) => { return AppUtils.appendVND(value); }
-        },
-        medicineName: {
-          title: 'Tên thuốc',
-          type: 'text',
-          editable: false,
-          addable: false,
-          filter: false,
-        },
+        
+        // priceForCompany: {
+        //   title: 'Giá bán cho công ty',
+        //   type: 'text',
+        //   filter: false,
+        //   valuePrepareFunction: (value) => { return AppUtils.appendVND(value); }
+        // },
+        // priceForFarm: {
+        //   title: 'Giá bán cho nông trại',
+        //   type: 'text',
+        //   filter: false,
+        //   valuePrepareFunction: (value) => { return AppUtils.appendVND(value); }
+        // },
+        // priceForPersonal: {
+        //   title: 'Giá bán lẻ',
+        //   type: 'text',
+        //   filter: false,
+        //   valuePrepareFunction: (value) => { return AppUtils.appendVND(value); }
+        // },
+        
       },
     };
   }
@@ -185,16 +203,20 @@ export class ImportMedicineComponent implements OnInit {
       this.toastService.notify(4,"Lỗi",message);
       return;
     }
-    this.dialogService.open(dialog).onClose.subscribe(isOke=>
-      {
-        if(isOke) 
-          this.createOrder();    
-      });
+    this.createOrder();
+    //Ask user before create 
+
+    // this.dialogService.open(dialog).onClose.subscribe(isOke=>
+    //   {
+    //     if(isOke) 
+    //     this.createOrder();
+    //   });
   }
   date:Date=new Date();
+  maHoaDonReal:string ='';
   createOrder() {
-    
-    let importOrderDto: ImportOrderDto = { id: null,importDate:this.date,listMedicineImport:[],staffName:'dangnt'};
+   
+    let importOrderDto: ImportOrderDto = { id: null,maHoaDonReal:this.maHoaDonReal,importDate:this.date,listMedicineImport:[],staffName:'dangnt'};
     this.source.getAll().then(
       data => {
         if(data.length===0){
@@ -214,7 +236,9 @@ export class ImportMedicineComponent implements OnInit {
             priceForPersonal: e.priceForPersonal,
             total: e.total,
             realSellPrice:0,
-            expiryDate:e.expiryDate
+            expiryDate:e.expiryDate,
+            boughtPriceAfterDiscount:e.boughtPriceAfterDiscount,
+            discount:e.discount
           });
         });
       this.importMedicineControllerService.createImportOrder(importOrderDto).subscribe(
@@ -230,11 +254,11 @@ export class ImportMedicineComponent implements OnInit {
 
 
   onDeleteConfirm(event): void {
-    if (window.confirm('Are you sure you want to delete?')) {
-      event.confirm.resolve();
-    } else {
-      event.confirm.reject();
-    }
+    // if (window.confirm('Are you sure you want to delete?')) {
+    //   event.confirm.resolve();
+    // } else {
+    //   event.confirm.reject();
+    // }
   }
   data: Array<any> = [{}];
   onCreateConfirm(event) {
@@ -266,7 +290,12 @@ export class ImportMedicineComponent implements OnInit {
     let medicine = this.listMedicines.find(e => e.code == newData.medicineCode);
     newData.medicineName = medicine.name;
     newData.medicineUnit = medicine.unit;
-    newData.total = (newData.boughtPrice * newData.amount).toString();
+    console.log(newData);
+    //calculate price after discount
+    newData.boughtPriceAfterDiscount = newData.boughtPrice * (100-newData.discount)/100;
+
+    newData.total = (newData.boughtPriceAfterDiscount * newData.amount).toString();
+
     if(isCreateNew){
       this.source.getAll().then(data =>{newData.stt = data.length + 1;});
     }
@@ -295,6 +324,9 @@ export class ImportMedicineComponent implements OnInit {
     let length = this.source.count();
     if (length === 0) {
       result = "Đơn hàng trống!";
+    }
+    if(AppUtils.isEmptyOrZero(this.maHoaDonReal)){
+      result = "Mã nhập hàng không được trống!";
     }
     return result;
   }

@@ -20,8 +20,8 @@ export class InvoiceComponent {
   customer : CustomerDto={name:'Không tên'};
   @Input() 
   isEmoss:boolean=true;
-  @Input()
-  dungThuoc:string='dung thuoc';
+  @Input() 
+  sotienbangchu:string='sotienbangchu';
   @Input()
   public data: InvoiceRow[] = [];
 

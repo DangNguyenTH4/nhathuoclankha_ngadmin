@@ -22,4 +22,8 @@ export interface SellOrderDto {
     time?: Date;
     total?: number;
     seller?:String;
+
+    numberOfSell?:string;
+    timeInputAnimal?:Date;
+    note?:string;
 }
