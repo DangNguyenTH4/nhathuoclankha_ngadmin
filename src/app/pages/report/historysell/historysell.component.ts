@@ -31,8 +31,9 @@ export class HistorysellComponent implements OnInit {
   ngOnInit() {
   }
   public products: any[] = [];
-  genFileReport(): string {
-    return GenerateFileName.genNormalReportName('homNay', 'vaiHomNua', '') + '.pdf';
+  genFileReport(extention:string): string {
+    let fileName :string = GenerateFileName.genNormalReportName('homNay', 'vaiHomNua', '') + '.' + extention;
+    return fileName;
   }
   testPrintDate() {
     this.adminControllerService.reportHistorySellGET(DateUtils.toStartOfDate(this.fromDate).toISOString(), DateUtils.toEndOfDate(this.toDate).toISOString()).subscribe(data => {

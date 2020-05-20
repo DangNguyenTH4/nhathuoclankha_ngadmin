@@ -27,7 +27,7 @@ import { EchartsBarAnimationComponent } from './echarts/echarts-bar-animation.co
 import { EchartsRadarComponent } from './echarts/echarts-radar.component';
 import { ReportRoutingModule, routedComponents } from './report-routing.module';
 import { NormalReportComponent } from './normal-report/normal-report.component';
-import { GridModule, PDFModule } from '@progress/kendo-angular-grid';
+import { GridModule, PDFModule, ExcelModule } from '@progress/kendo-angular-grid';
 import { SharedModule } from '../sharedmodule/sharemodule.module';
 import { FormsModule } from '@angular/forms';
 import { HistoryimportComponent } from './historyimport/historyimport.component';
@@ -72,6 +72,7 @@ const components = [
     
     GridModule, 
     PDFModule ,
+    ExcelModule, 
     
     NbCardModule,
     NbDatepickerModule , 

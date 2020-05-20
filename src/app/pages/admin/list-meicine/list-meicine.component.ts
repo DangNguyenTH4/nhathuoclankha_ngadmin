@@ -50,8 +50,8 @@ export class ListMeicineComponent implements OnInit {
   }
   public products: GridDataResult ;
   private source:any[] = [];
-  genFileReport(): string {
-    return GenerateFileName.printListMedicine() + '.pdf';
+  genFileReport(extention:string): string {
+    return GenerateFileName.printListMedicine() + '.' + extention;
   }
   testPrintDate() {
     this.adminControllerService.getListAllUsingPOST().subscribe(data => {

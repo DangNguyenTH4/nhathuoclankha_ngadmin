@@ -22,8 +22,8 @@ export class NormalReportComponent implements OnInit {
   ngOnInit() {
   }
   public products: any[] = reportSample;
-  genFileReport(): string {
-    return GenerateFileName.genNormalReportName('homNay', 'vaiHomNua', '') + '.pdf';
+  genFileReport(extention:string): string {
+    return GenerateFileName.genNormalReportName('homNay', 'vaiHomNua', '') + '.'+extention;
   }
   getReport() {
     this.adminControllerService.reportUsingGET(DateUtils.toStartOfDate(this.fromDate).toISOString(), DateUtils.toEndOfDate(this.toDate).toISOString()).subscribe(data => {

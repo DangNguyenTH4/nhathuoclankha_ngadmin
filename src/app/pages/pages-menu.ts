@@ -4,6 +4,7 @@ import { Title } from '@angular/platform-browser';
 class TitleMenu{
   static readonly SELLMEDICINE = 'Tạo hóa đơn bán hàng';
   static readonly IMPORTMEDICINE = 'Tạo hóa đơn nhập hàng';
+  static readonly NEWMEDICINE = 'Tạo loại thuốc mới';
   static readonly REPORT = 'Báo cáo / Thống kê';
   static readonly REPORTDAILY = 'Thống kê theo ngày';
   static readonly HISTORYSELL = 'Lịch sử bán hàng';
@@ -27,6 +28,12 @@ export const MENU_ITEMS_ALL: NbMenuItem[] = [
     title: TitleMenu.IMPORTMEDICINE,
     icon: 'shopping-cart-outline',
     link: '/'+CommonData.StorePagePrefix+'/import-medicine',
+    home: true,
+  },
+  {
+    title: TitleMenu.NEWMEDICINE,
+    icon: 'shopping-cart-outline',
+    link: '/'+CommonData.StorePagePrefix+'/new-medicine',
     home: true,
   },
   {
