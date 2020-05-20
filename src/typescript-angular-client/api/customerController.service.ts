@@ -203,6 +203,52 @@ export class CustomerControllerService {
     }
 
     /**
+     * getListFarmName
+     * 
+     * @param phone phone
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public getListFarmName(name: string, observe?: 'body', reportProgress?: boolean): Observable<string[]>;
+    public getListFarmName(name: string, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<string>>;
+    public getListFarmName(name: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<string>>;
+    public getListFarmName(name: string, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+
+        if (name === null || name === undefined) {
+            throw new Error('Required parameter phone was null or undefined when calling findCustomerByPhoneUsingGET.');
+        }
+
+        let queryParameters = new HttpParams({encoder: new CustomHttpUrlEncodingCodec()});
+        if (name !== undefined && name !== null) {
+            queryParameters = queryParameters.set('name', <any>name);
+        }
+
+        let headers = this.defaultHeaders;
+
+        // to determine the Accept header
+        let httpHeaderAccepts: string[] = [
+            '*/*'
+        ];
+        const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+        ];
+
+        return this.httpClient.get<string>(`${this.basePath}/customer/list-farm-name`,
+            {
+                params: queryParameters,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+    /**
      * getCustomerByPhone
      * 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
