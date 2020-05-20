@@ -38,7 +38,10 @@
                 </datalist>
               </div>
               <div class="col-md-3">
-                <input [(ngModel)]="customer.traiDungThuoc" type="text" nbInput placeholder="Tên chủ trại">
+                <input [(ngModel)]="customer.traiDungThuoc" (change)="changeFarmName()" list="listFarmName" type="text" nbInput placeholder="Tên chủ trại">
+                <datalist id="listFarmName" >
+                  <option *ngFor="let name of listFarmName" value="{{name}}">
+                </datalist>
               </div>
               <div style= "width:50px" class="col-md-1">
                 <input [(ngModel)]="customer.typeOfCustomer" type="text" nbInput placeholder="Loại">

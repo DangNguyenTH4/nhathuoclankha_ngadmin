@@ -14,6 +14,7 @@ import { parseNumber } from '@progress/kendo-angular-intl';
 const EMOSSCOMPANY = "Công ty Cổ Phần Nông Trại E.MOSS";
 const PHONE = "PHONE";
 const NAME = "NAME_";
+const FARM = "FARM_";
 
 @Component({
   selector: 'ngx-sell',
@@ -47,6 +48,7 @@ export class SellComponent implements OnInit {
     this.prePareListMedicineDisplay();
     this.loadListPhoneCustomer();
     this.loadListNameCustomer();
+    this.loadListFarmNameCustomer();
   }
   private prePareListMedicineDisplay() {
     //get all medicine
@@ -555,6 +557,7 @@ export class SellComponent implements OnInit {
   paperSize = 'A5';
   listPhone: string[] = [];
   listName: string[] = [];
+  listFarmName:string[]=[];
 
   private loadListPhoneCustomer() {
 
@@ -569,6 +572,14 @@ export class SellComponent implements OnInit {
       this.log.logAny(this.listName);
     });
   }
+  private loadListFarmNameCustomer() {
+    this.customerControllerService.getListFarmName('').subscribe(data => {
+      this.listFarmName = data;
+      this.log.logAny(this.listFarmName);
+    });
+  }
+  
+
   //Khi người dùng nhập số điện thoại xong => update thông tin của người dùng nếu tồn tại
   changePhone() {
     this.log.log("Change phone");
@@ -621,6 +632,40 @@ export class SellComponent implements OnInit {
     });
 
   }
+  changeFarmName() {
+    this.log.log("Change farm name log");
+    //Add prefix : NAME_ for server know find by name
+    this.customerControllerService.getCustomerByPhone2UsingGET(FARM + this.customer.traiDungThuoc).subscribe(data => {
+      this.log.logAny(data);
+      if (data) {
+        this.customer = data;
+        //Note : do chưa biết cách async 2 customerControllerService, nên mới phải để 2 cái ở trong này.
+        //Lấy ra danh sách các đồ đã mua trước đó.
+        this.customerControllerService.getListBougthByPhoneUsingGet(FARM + data.traiDungThuoc).subscribe(data2 => {
+          if (data2) {
+            this.listSourceMedicines = data2;
+          }
+          //update current price with current customer type
+          this.selectType(this.customer.type);
+          this.loadTableSetting();
+        });
+      }else{
+        this.customer.id=null;
+        //Note : do chưa biết cách async 2 customerControllerService, nên mới phải để 2 cái ở trong này.
+        //Server sẽ sử dụng chung hàm tìm theo số điện thoại thôi, vì số điện thoại này là duy nhất.
+        this.customerControllerService.getListBougthByPhoneUsingGet(FARM).subscribe(data2 => {
+          if (data2) {
+            this.listSourceMedicines = data2;
+          }
+          this.selectType(this.customer.type);
+          this.loadTableSetting();
+        });
+      }
+      this.changeEmossCheckbox(this.customer.name);
+    },error=>{this.customer.id=null;});
+  
+
+  }
   changeToEmossCompany() {
     this.log.log(this.isEmoss + "");
     if (this.isEmoss) {
@@ -641,7 +686,7 @@ export class SellComponent implements OnInit {
     console.log(event);
     console.log(">>>>> onchange cell");
   }
-  sotienbangchu:string= "..............";
+  sotienbangchu:string= "....................................";
   buildSotienBangChu(){
     let total:number = 0;
     this.source.getAll().then(data=>{
