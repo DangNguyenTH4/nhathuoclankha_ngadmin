@@ -10,6 +10,7 @@ import { GenerateFileName } from '../../../common/genfilename';
 import { AuthService } from '../../../service/auth-service.service';
 import { TablesModule } from '../../tables/tables.module';
 import { AppUtils } from '../../../common/utils/AppUtils';
+import { parseNumber } from '@progress/kendo-angular-intl';
 const EMOSSCOMPANY = "Công ty Cổ Phần Nông Trại E.MOSS";
 const PHONE = "PHONE";
 const NAME = "NAME_";
@@ -60,6 +61,8 @@ export class SellComponent implements OnInit {
         this.settings = this.loadTableSetting();
       }
     );
+    this.log.log(">>>gen money")
+    
   }
   listMedicineDislay = [];
   listSourceMedicines: MedicineDto[] = [];
@@ -133,14 +136,14 @@ export class SellComponent implements OnInit {
           filter: false,
         },
         
-        medicinePrice: {
-          title: "Đơn giá hiện tại",
-          type: 'number',
-          editable: false,
-          addable: false,
-          filter: false,
-          valuePrepareFunction: (value) => { return AppUtils.appendVND(value); }
-        },
+        // medicinePrice: {
+        //   title: "Đơn giá hiện tại",
+        //   type: 'number',
+        //   editable: false,
+        //   addable: false,
+        //   filter: false,
+        //   valuePrepareFunction: (value) => { return AppUtils.appendVND(value); }
+        // },
         // addMore: {
         //   title: 'Tính phí',
         //   type: 'number',
@@ -200,7 +203,10 @@ export class SellComponent implements OnInit {
   }
   async createOrder(pdf) {
     this.log.log('Create new order....');
-    let sellOrderDto: SellOrderDto = { customer: null, id: null, listMedicines: [], time: null, total: 0, seller: this.authService.getUserName() };
+    let sellOrderDto = { customer: null, id: null, listMedicines: [], time: null, total: 0, seller: this.authService.getUserName(), note:'',numberOfSell:'',timeInputAnimal:null };
+    sellOrderDto.numberOfSell = this.sellOrder.numberOfSell;
+    sellOrderDto.timeInputAnimal = this.sellOrder.timeInputAnimal;
+    sellOrderDto.note = this.sellOrder.note;
     sellOrderDto.customer = this.customer;
     let tempTotal: number = 0;
     this.log.log('Build body sellDto..');
@@ -219,7 +225,9 @@ export class SellComponent implements OnInit {
             total: e.total,
             // Neu khong nhap gia ban moi thi mac dinh gia ban moi bang giaban cu
             realSellPrice: AppUtils.isEmptyOrZero(e.realSellPrice) ? e.medicinePrice : e.realSellPrice,
-            expiryDate:""
+            expiryDate:"",
+            discount:e.discount,
+            boughtPriceAfterDiscount:e.boughtPriceAfterDiscount
           });
           tempTotal += e.total;
         });
@@ -296,6 +304,7 @@ export class SellComponent implements OnInit {
     if (validateMessage === "ok") {
       event.newData = this.updateInfoRow(event.newData, isCreateNew);
       await event.confirm.resolve(event.newData);
+      
       return event;
 
     } else {
@@ -306,7 +315,8 @@ export class SellComponent implements OnInit {
   }
   isEmoss: boolean = true;
   autoCheckDate: boolean = true;
-  customer: CustomerDto = { id: null, name: 'Công ty Cổ Phần Nông Trại E.MOSS', phoneNumber: '', type: 'other' };
+  customer: CustomerDto = { id: null, name: 'Công ty Cổ Phần Nông Trại E.MOSS', phoneNumber: '', type: 'other',typeOfCustomer:'' };
+  sellOrder:SellOrderDto={ customer: null, id: null, listMedicines: [], time: null, total: 0, seller: this.authService.getUserName(), note:'',numberOfSell:'',timeInputAnimal:null };
   private updateInfoRow(newData: any, isCreateNew: boolean) {
     let medicine = this.listSourceMedicines.find(e => e.code == newData.medicineCode);
     newData.medicineName = medicine.name;
@@ -332,6 +342,7 @@ export class SellComponent implements OnInit {
         });
         
       });
+     
     }
 
     //calculate total:
@@ -350,7 +361,9 @@ export class SellComponent implements OnInit {
     }
     else {
       this.log.log('Sell with normal price: ');
-      total = ((parseInt(medicinePrice)) * amount).toString();
+      // total = ((parseInt(medicinePrice)) * amount).toString();
+      //TODO Don't use default price
+      total='0';
     }
     return total;
   }
@@ -427,13 +440,18 @@ export class SellComponent implements OnInit {
     this.source.getAll().then(elements => {
       //Get price
       if (elements && elements.length !== 0) {
+        let total = 0;
         elements.forEach(element => {
           let name: string = element.medicineName;
-          let price: number = AppUtils.isEmpty(element.realSellPrice) ? (element.medicinePrice) * 1000 : element.realSellPrice * 1000;
+          // //Dont use default price. only use realSellPrice
+          let price: number = AppUtils.isEmpty(element.realSellPrice) ? 0 : element.realSellPrice * 1000;
+          // let price : number = parseInt(element.realSellPrice)*1000;
           let amount: number = element.amount;
           let unit: string = element.medicineUnit;
           temp.push(new InvoiceRow(element.stt, name, price, amount, unit));
+          total += (element.realSellPrice*amount);
         });
+        this.buildSotienBangChu();
       } else {
         temp = initInvoiceData;
       }
@@ -443,6 +461,7 @@ export class SellComponent implements OnInit {
   resetData() {
     this.log.log('Reset lại data');
     this.customer = {};
+    this.sellOrder={ customer: null, id: null, listMedicines: [], time: null, total: 0, seller: this.authService.getUserName(), note:'',numberOfSell:'',timeInputAnimal:null };
     this.source.load([]);
     this.resultCreate = false;
     this.dataInvoiceRow= initInvoiceData;
@@ -558,8 +577,11 @@ export class SellComponent implements OnInit {
       if (data) {
         this.customer = data;
       }
+      else{
+        this.customer.id=null;
+      }
       this.changeEmossCheckbox(this.customer.name);
-    });
+    },error=>{this.customer.id=null;});
     this.customerControllerService.getListBougthByPhoneUsingGet(PHONE + this.customer.phoneNumber).subscribe(data => {
       if (data) {
         this.log.logAny(data);
@@ -580,10 +602,11 @@ export class SellComponent implements OnInit {
       this.log.logAny(data);
       if (data) {
         this.customer = data;
-        
+      }else{
+        this.customer.id=null;
       }
       this.changeEmossCheckbox(this.customer.name);
-    });
+    },error=>{this.customer.id=null;});
     this.customerControllerService.getListBougthByPhoneUsingGet(NAME + this.customer.name).subscribe(data => {
       if (data) {
         this.log.logAny(data);
@@ -617,6 +640,19 @@ export class SellComponent implements OnInit {
   changeMedicine(event){
     console.log(event);
     console.log(">>>>> onchange cell");
+  }
+  sotienbangchu:string= "..............";
+  buildSotienBangChu(){
+    let total:number = 0;
+    this.source.getAll().then(data=>{
+      data.forEach(element => {
+        total+=parseNumber(element.total);
+      });
+      console.log(">>> tong tien : "+total);
+      this.sellMedicineControllerService.genMoneyUsingGET(total+"").subscribe(data=>{
+        this.sotienbangchu=data[0];
+      })
+    });
   }
 }
 

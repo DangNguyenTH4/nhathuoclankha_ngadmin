@@ -36,8 +36,9 @@ export class MySellHistoryComponent implements OnInit {
   ngOnInit() {
   }
   public products: any[] = [];
-  genFileReport(): string {
-    return GenerateFileName.genNormalReportName('homNay', 'vaiHomNua', '') + '.pdf';
+  genFileReport(extention:string): string {
+    let reuslt:string =  GenerateFileName.genNormalReportName('homNay', 'vaiHomNua', '') + '.'+ extention;
+    return reuslt;
   }
   testPrintDate() {
     // this.sellMedicineControllerService.reportMyHistorySellGET(this.authService.getUserName()).subscribe(data => {

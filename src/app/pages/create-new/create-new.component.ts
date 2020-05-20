@@ -22,6 +22,7 @@ export class CreateNewComponent implements OnInit {
       code: '',
       medicineName: '',
       unit: '',
+      group:'',
       company: this.medicineBuilder.group({
         companyName: '',
       }),

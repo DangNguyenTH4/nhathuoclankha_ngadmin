@@ -26,4 +26,9 @@ export interface MedicineDto {
     priceForPersonal: number;
     total: number;
     amount: number;
+
+
+    discount:number;
+    boughtPriceAfterDiscount:number;
+
 }

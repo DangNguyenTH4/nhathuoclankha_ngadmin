@@ -8,7 +8,7 @@ import { NbCardModule, NbDatepickerModule, NbInputModule, NbButtonModule } from 
 import { FormsModule } from '@angular/forms';
 import { MyCoreModule } from '../../service/core2';
 import { ThemeModule } from '../../@theme/theme.module';
-import { GridModule, PDFModule } from '@progress/kendo-angular-grid';
+import { GridModule, PDFModule, ExcelModule } from '@progress/kendo-angular-grid';
 
 @NgModule({
   declarations: [AdminStoreComponent, ListMeicineComponent],
@@ -26,6 +26,7 @@ import { GridModule, PDFModule } from '@progress/kendo-angular-grid';
     MyCoreModule,
     GridModule,
     PDFModule,
+    ExcelModule,
   ]
 })
 export class AdminStoreModule { }

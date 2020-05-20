@@ -23,6 +23,7 @@ export interface MedicineDtoAdmin {
     
     quantityExsiting?: number;
     unit?: string;
+    group?:string;
 
     // for display list:
     companyName?: String ;

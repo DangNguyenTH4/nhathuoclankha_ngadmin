@@ -15,8 +15,9 @@
         <nb-datepicker #formpickertoDate format="dd\MM\yyyy"></nb-datepicker>
       </div>
       <div class="col-md-3">
-        <button nbButton status="danger" (click)="testPrintDate()"> Truy xuất </button>
-        <button kendoGridPDFCommand icon="file-pdf">In</button>
+        <button nbButton status="danger" (click)="testPrintDate()"> Tìm </button>
+        <button nbButton status="success"kendoGridPDFCommand >Pdf</button>
+        <button nbButton  status="success"  kendoGridExcelCommand icon>Excel</button>
       </div>
     </div>
   </ng-template>
@@ -30,7 +31,7 @@
   </kendo-grid-column>
   <kendo-grid-column field="total"   [format]="formatOptions" title="Tổng tiền">
   </kendo-grid-column>
-  <kendo-grid-pdf fileName="{{genFileReport()}}" [allPages]="true" paperSize="A4" [repeatHeaders]="true"
+  <kendo-grid-pdf fileName="{{genFileReport('pdf')}}" [allPages]="true" paperSize="A4" [repeatHeaders]="true"
     [landscape]="true">
     <kendo-grid-pdf-margin top="2cm" right="1cm" left="1cm" bottom="2cm"></kendo-grid-pdf-margin>
     <ng-template kendoGridPDFTemplate let-pageNum="pageNum" let-totalPages="totalPages">
@@ -45,4 +46,5 @@
       </div>
     </ng-template>
   </kendo-grid-pdf>
+  <kendo-grid-excel fileName="{{genFileReport('xlsx')}}"></kendo-grid-excel>
 </kendo-grid>
